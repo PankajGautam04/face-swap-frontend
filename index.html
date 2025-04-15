@@ -19,6 +19,39 @@
             const [loading, setLoading] = React.useState(false);
             const [error, setError] = React.useState(null);
 
+            // Helper to rename and convert file to .jpg
+            const renameFileToJpg = (file, newName) => {
+                // If the file already ends with .jpg, just rename it
+                const fileName = file.name.toLowerCase();
+                if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
+                    return new File([file], newName, { type: file.type });
+                }
+                // Otherwise, create a new File with .jpg extension
+                // Note: This doesn't convert the image format, just the extension
+                // The backend (cv2) can handle various formats despite the extension
+                return new File([file], newName, { type: 'image/jpeg' });
+            };
+
+            const handleSourceChange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const renamedFile = renameFileToJpg(file, 'source.jpg');
+                    setSourceFile(renamedFile);
+                } else {
+                    setSourceFile(null);
+                }
+            };
+
+            const handleTargetChange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const renamedFile = renameFileToJpg(file, 'target.jpg');
+                    setTargetFile(renamedFile);
+                } else {
+                    setTargetFile(null);
+                }
+            };
+
             const handleSubmit = async (e) => {
                 e.preventDefault();
                 if (!sourceFile || !targetFile) {
@@ -72,7 +105,7 @@
                             <input
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => setSourceFile(e.target.files[0])}
+                                onChange={handleSourceChange}
                                 className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                             />
                         </div>
@@ -81,7 +114,7 @@
                             <input
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => setTargetFile(e.target.files[0])}
+                                onChange={handleTargetChange}
                                 className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                             />
                         </div>
@@ -101,7 +134,7 @@
                             <img src={resultImage} alt="Swapped Face" className="w-full rounded" />
                             <button
                                 onClick={handleDownload}
-                                className="mt-4 w-full py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700"
+                                className="mt-4 w-full py-2 px-4 bg-green-600 text-white rounded hover:bg-blue-700"
                             >
                                 Download Result
                             </button>
