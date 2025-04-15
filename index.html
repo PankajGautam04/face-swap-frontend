@@ -139,7 +139,7 @@
             };
 
             return (
-                <div className={`w-full max-w-md sm:max-w-lg md:max-w-xl p-4 sm:p-6 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
+                <div className={`w-full max-w-3xl sm:max-w-4xl md:max-w-5xl p-4 sm:p-6 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
                     {/* Theme Toggle */}
                     <div className="flex justify-end mb-4">
                         <button
@@ -156,62 +156,65 @@
                     </h1>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Source Image Upload */}
-                        <div
-                            onDragOver={(e) => handleDragOver(e, setSourceFile)}
-                            onDragLeave={handleDragLeave}
-                            onDrop={(e) => handleDrop(e, setSourceFile)}
-                            className={`border-2 border-dashed rounded-lg p-4 transition-all ${sourceFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
-                        >
-                            <label className="block text-sm font-semibold mb-2">Source Image</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleSourceChange}
-                                className="hidden"
-                                id="source-upload"
-                            />
-                            <label
-                                htmlFor="source-upload"
-                                className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
+                        {/* Source and Target Images Side by Side on Medium Screens and Above */}
+                        <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
+                            {/* Source Image Upload */}
+                            <div
+                                onDragOver={(e) => handleDragOver(e, setSourceFile)}
+                                onDragLeave={handleDragLeave}
+                                onDrop={(e) => handleDrop(e, setSourceFile)}
+                                className={`flex-1 border-2 border-dashed rounded-lg p-4 transition-all ${sourceFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
                             >
-                                <i className="fas fa-upload mr-2"></i>
-                                {sourceFile ? sourceFile.name : "Choose or Drag Image"}
-                            </label>
-                            {sourceFile && (
-                                <div className="mt-3 flex justify-center">
-                                    <img src={URL.createObjectURL(sourceFile)} alt="Source Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
-                                </div>
-                            )}
-                        </div>
+                                <label className="block text-sm font-semibold mb-2">Source Image</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleSourceChange}
+                                    className="hidden"
+                                    id="source-upload"
+                                />
+                                <label
+                                    htmlFor="source-upload"
+                                    className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
+                                >
+                                    <i className="fas fa-upload mr-2"></i>
+                                    {sourceFile ? sourceFile.name : "Choose or Drag Image"}
+                                </label>
+                                {sourceFile && (
+                                    <div className="mt-3 flex justify-center">
+                                        <img src={URL.createObjectURL(sourceFile)} alt="Source Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
+                                    </div>
+                                )}
+                            </div>
 
-                        {/* Target Image Upload */}
-                        <div
-                            onDragOver={(e) => handleDragOver(e, setTargetFile)}
-                            onDragLeave={handleDragLeave}
-                            onDrop={(e) => handleDrop(e, setTargetFile)}
-                            className={`border-2 border-dashed rounded-lg p-4 transition-all ${targetFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
-                        >
-                            <label className="block text-sm font-semibold mb-2">Target Image</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleTargetChange}
-                                className="hidden"
-                                id="target-upload"
-                            />
-                            <label
-                                htmlFor="target-upload"
-                                className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
+                            {/* Target Image Upload */}
+                            <div
+                                onDragOver={(e) => handleDragOver(e, setTargetFile)}
+                                onDragLeave={handleDragLeave}
+                                onDrop={(e) => handleDrop(e, setTargetFile)}
+                                className={`flex-1 border-2 border-dashed rounded-lg p-4 transition-all ${targetFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
                             >
-                                <i className="fas fa-upload mr-2"></i>
-                                {targetFile ? targetFile.name : "Choose or Drag Image"}
-                            </label>
-                            {targetFile && (
-                                <div className="mt-3 flex justify-center">
-                                    <img src={URL.createObjectURL(targetFile)} alt="Target Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
-                                </div>
-                            )}
+                                <label className="block text-sm font-semibold mb-2">Target Image</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleTargetChange}
+                                    className="hidden"
+                                    id="target-upload"
+                                />
+                                <label
+                                    htmlFor="target-upload"
+                                    className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
+                                >
+                                    <i className="fas fa-upload mr-2"></i>
+                                    {targetFile ? targetFile.name : "Choose or Drag Image"}
+                                </label>
+                                {targetFile && (
+                                    <div className="mt-3 flex justify-center">
+                                        <img src={URL.createObjectURL(targetFile)} alt="Target Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         {/* Submit Button */}
