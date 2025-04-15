@@ -10,8 +10,18 @@
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom Tailwind animation for fade-in */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
-<body className="min-h-screen flex items-center justify-center transition-colors duration-300">
+<body class="min-h-screen flex items-center justify-center transition-colors duration-300 p-4 sm:p-6">
     <div id="root"></div>
     <script type="text/babel">
         function App() {
@@ -26,7 +36,7 @@
             // Theme toggle
             const toggleTheme = () => {
                 setIsDarkMode(!isDarkMode);
-                document.body.className = isDarkMode ? 'bg-gray-100' : 'bg-gray-900';
+                document.body.className = `min-h-screen flex items-center justify-center transition-colors duration-300 p-4 sm:p-6 ${isDarkMode ? 'bg-gray-100' : 'bg-gray-900'}`;
             };
 
             // Rename and convert file to .jpg
@@ -129,7 +139,7 @@
             };
 
             return (
-                <div className={`w-full max-w-lg p-6 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
+                <div className={`w-full max-w-md sm:max-w-lg md:max-w-xl p-4 sm:p-6 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
                     {/* Theme Toggle */}
                     <div className="flex justify-end mb-4">
                         <button
@@ -141,7 +151,7 @@
                     </div>
 
                     {/* Title */}
-                    <h1 className="text-3xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+                    <h1 className="text-2xl sm:text-3xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
                         Face Swap Magic
                     </h1>
 
@@ -163,14 +173,14 @@
                             />
                             <label
                                 htmlFor="source-upload"
-                                className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                                className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
                             >
                                 <i className="fas fa-upload mr-2"></i>
                                 {sourceFile ? sourceFile.name : "Choose or Drag Image"}
                             </label>
                             {sourceFile && (
                                 <div className="mt-3 flex justify-center">
-                                    <img src={URL.createObjectURL(sourceFile)} alt="Source Preview" className="w-32 h-32 object-cover rounded-lg shadow-md" />
+                                    <img src={URL.createObjectURL(sourceFile)} alt="Source Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
                                 </div>
                             )}
                         </div>
@@ -192,14 +202,14 @@
                             />
                             <label
                                 htmlFor="target-upload"
-                                className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                                className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
                             >
                                 <i className="fas fa-upload mr-2"></i>
                                 {targetFile ? targetFile.name : "Choose or Drag Image"}
                             </label>
                             {targetFile && (
                                 <div className="mt-3 flex justify-center">
-                                    <img src={URL.createObjectURL(targetFile)} alt="Target Preview" className="w-32 h-32 object-cover rounded-lg shadow-md" />
+                                    <img src={URL.createObjectURL(targetFile)} alt="Target Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
                                 </div>
                             )}
                         </div>
@@ -208,11 +218,11 @@
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full py-3 px-4 rounded-lg text-white font-semibold transition-all transform hover:scale-105 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'}`}
+                            className={`w-full py-2 sm:py-3 px-4 rounded-lg text-white font-semibold transition-all transform hover:scale-105 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'}`}
                         >
                             {loading ? (
                                 <div className="flex items-center justify-center">
-                                    <svg className="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24">
+                                    <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5 mr-2 text-white" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
@@ -235,7 +245,7 @@
                     {/* Result */}
                     {resultImage && (
                         <div className="mt-6 animate-fade-in">
-                            <h2 className="text-lg font-semibold mb-2 text-center">Result</h2>
+                            <h2 className="text-lg sm:text-xl font-semibold mb-2 text-center">Result</h2>
                             <div className="relative">
                                 <img
                                     src={resultImage}
@@ -252,7 +262,7 @@
                             </div>
                             <button
                                 onClick={handleDownload}
-                                className="mt-4 w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all transform hover:scale-105"
+                                className="mt-4 w-full py-2 sm:py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all transform hover:scale-105"
                             >
                                 <i className="fas fa-download mr-2"></i>
                                 Download Result
