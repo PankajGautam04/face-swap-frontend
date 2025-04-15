@@ -399,4 +399,218 @@
                                     />
                                     <label
                                         htmlFor="source-image-upload"
-                                        className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition
+                                        className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
+                                    >
+                                        <i className="fas fa-upload mr-2"></i>
+                                        {sourceImageFile ? sourceImageFile.name : "Choose or Drag Image"}
+                                    </label>
+                                    {sourceImageFile && (
+                                        <div className="mt-3 flex justify-center">
+                                            <img src={URL.createObjectURL(sourceImageFile)} alt="Source Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Target Image Upload */}
+                                <div
+                                    onDragOver={(e) => handleDragOver(e, setTargetImageFile)}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={(e) => handleImageDrop(e, setTargetImageFile)}
+                                    className={`flex-1 border-2 border-dashed rounded-lg p-4 transition-all ${targetImageFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
+                                >
+                                    <label className="block text-sm font-semibold mb-2">Target Image</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleTargetImageChange}
+                                        className="hidden"
+                                        id="target-image-upload"
+                                    />
+                                    <label
+                                        htmlFor="target-image-upload"
+                                        className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
+                                    >
+                                        <i className="fas fa-upload mr-2"></i>
+                                        {targetImageFile ? targetImageFile.name : "Choose or Drag Image"}
+                                    </label>
+                                    {targetImageFile && (
+                                        <div className="mt-3 flex justify-center">
+                                            <img src={URL.createObjectURL(targetImageFile)} alt="Target Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Submit Button */}
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className={`w-full py-2 sm:py-3 px-4 rounded-lg text-white font-semibold transition-all transform hover:scale-105 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'}`}
+                            >
+                                {loading ? (
+                                    <div className="flex items-center justify-center">
+                                        <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5 mr-2 text-white" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Processing...
+                                    </div>
+                                ) : (
+                                    "Swap Faces"
+                                )}
+                            </button>
+                        </form>
+                    )}
+
+                    {/* Video Swap Section */}
+                    {activeTab === 'video' && (
+                        <form onSubmit={handleVideoSubmit} className="space-y-6 relative">
+                            {/* Loading Overlay */}
+                            {loading && (
+                                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                    <div className="flex flex-col items-center">
+                                        <svg className="animate-spin h-8 w-8 text-white mb-2" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        <span className="text-white text-lg">Processing...</span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Source and Target Videos Side by Side on Medium Screens and Above */}
+                            <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
+                                {/* Source Video Upload */}
+                                <div
+                                    onDragOver={(e) => handleDragOver(e, setSourceVideoFile)}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={(e) => handleVideoDrop(e, setSourceVideoFile)}
+                                    className={`flex-1 border-2 border-dashed rounded-lg p-4 transition-all ${sourceVideoFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
+                                >
+                                    <label className="block text-sm font-semibold mb-2">Source Image</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleSourceVideoChange}
+                                        className="hidden"
+                                        id="source-video-upload"
+                                    />
+                                    <label
+                                        htmlFor="source-video-upload"
+                                        className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
+                                    >
+                                        <i className="fas fa-upload mr-2"></i>
+                                        {sourceVideoFile ? sourceVideoFile.name : "Choose or Drag Image"}
+                                    </label>
+                                    {sourceVideoFile && (
+                                        <div className="mt-3 flex justify-center">
+                                            <img src={URL.createObjectURL(sourceVideoFile)} alt="Source Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Target Video Upload */}
+                                <div
+                                    onDragOver={(e) => handleDragOver(e, setTargetVideoFile)}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={(e) => handleVideoDropTarget(e, setTargetVideoFile)}
+                                    className={`flex-1 border-2 border-dashed rounded-lg p-4 transition-all ${targetVideoFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
+                                >
+                                    <label className="block text-sm font-semibold mb-2">Target Video</label>
+                                    <input
+                                        type="file"
+                                        accept="video/*"
+                                        onChange={handleTargetVideoChange}
+                                        className="hidden"
+                                        id="target-video-upload"
+                                    />
+                                    <label
+                                        htmlFor="target-video-upload"
+                                        className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
+                                    >
+                                        <i className="fas fa-upload mr-2"></i>
+                                        {targetVideoFile ? targetVideoFile.name : "Choose or Drag Video"}
+                                    </label>
+                                    {targetVideoFile && (
+                                        <div className="mt-3 flex justify-center">
+                                            <video src={URL.createObjectURL(targetVideoFile)} className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" controls />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Submit Button */}
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className={`w-full py-2 sm:py-3 px-4 rounded-lg text-white font-semibold transition-all transform hover:scale-105 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'}`}
+                            >
+                                {loading ? (
+                                    <div className="flex items-center justify-center">
+                                        <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5 mr-2 text-white" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Processing...
+                                    </div>
+                                ) : (
+                                    "Swap Videos"
+                                )}
+                            </button>
+                        </form>
+                    )}
+
+                    {/* Error Message */}
+                    {error && (
+                        <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg flex items-center animate-fade-in">
+                            <i className="fas fa-exclamation-circle mr-2"></i>
+                            {error}
+                        </div>
+                    )}
+
+                    {/* Result */}
+                    {(resultImage || resultVideo) && (
+                        <div className="mt-6 animate-fade-in">
+                            <h2 className="text-lg sm:text-xl font-semibold mb-2 text-center">Result</h2>
+                            <div className="relative">
+                                {resultImage && (
+                                    <img
+                                        src={resultImage}
+                                        alt="Swapped Face"
+                                        className={`w-full rounded-lg shadow-lg cursor-pointer transition-transform duration-300 ${isZoomed ? 'scale-150' : 'scale-100'}`}
+                                        onClick={toggleZoom}
+                                    />
+                                )}
+                                {resultVideo && (
+                                    <video
+                                        src={resultVideo}
+                                        className="w-full rounded-lg shadow-lg"
+                                        controls
+                                    />
+                                )}
+                                {resultImage && (
+                                    <button
+                                        onClick={toggleZoom}
+                                        className="absolute top-2 right-2 p-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition-colors"
+                                    >
+                                        <i className={`fas ${isZoomed ? 'fa-search-minus' : 'fa-search-plus'}`}></i>
+                                    </button>
+                                )}
+                            </div>
+                            <button
+                                onClick={handleDownload}
+                                className="mt-4 w-full py-2 sm:py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all transform hover:scale-105"
+                            >
+                                <i className="fas fa-download mr-2"></i>
+                                Download Result
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+</body>
+</html>
