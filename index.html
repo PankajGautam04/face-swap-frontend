@@ -8,8 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body className="min-h-screen flex items-center justify-center transition-colors duration-300">
     <div id="root"></div>
     <script type="text/babel">
         function App() {
@@ -18,20 +20,25 @@
             const [resultImage, setResultImage] = React.useState(null);
             const [loading, setLoading] = React.useState(false);
             const [error, setError] = React.useState(null);
+            const [isDarkMode, setIsDarkMode] = React.useState(false);
+            const [isZoomed, setIsZoomed] = React.useState(false);
 
-            // Helper to rename and convert file to .jpg
+            // Theme toggle
+            const toggleTheme = () => {
+                setIsDarkMode(!isDarkMode);
+                document.body.className = isDarkMode ? 'bg-gray-100' : 'bg-gray-900';
+            };
+
+            // Rename and convert file to .jpg
             const renameFileToJpg = (file, newName) => {
-                // If the file already ends with .jpg, just rename it
                 const fileName = file.name.toLowerCase();
                 if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
                     return new File([file], newName, { type: file.type });
                 }
-                // Otherwise, create a new File with .jpg extension
-                // Note: This doesn't convert the image format, just the extension
-                // The backend (cv2) can handle various formats despite the extension
                 return new File([file], newName, { type: 'image/jpeg' });
             };
 
+            // Handle file selection
             const handleSourceChange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -49,6 +56,27 @@
                     setTargetFile(renamedFile);
                 } else {
                     setTargetFile(null);
+                }
+            };
+
+            // Drag-and-drop handlers
+            const handleDragOver = (e, setFile) => {
+                e.preventDefault();
+                e.currentTarget.classList.add('border-blue-500');
+            };
+
+            const handleDragLeave = (e) => {
+                e.preventDefault();
+                e.currentTarget.classList.remove('border-blue-500');
+            };
+
+            const handleDrop = (e, setFile) => {
+                e.preventDefault();
+                e.currentTarget.classList.remove('border-blue-500');
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    const renamedFile = renameFileToJpg(file, setFile === setSourceFile ? 'source.jpg' : 'target.jpg');
+                    setFile(renamedFile);
                 }
             };
 
@@ -96,46 +124,137 @@
                 }
             };
 
+            const toggleZoom = () => {
+                setIsZoomed(!isZoomed);
+            };
+
             return (
-                <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-                    <h1 className="text-2xl font-bold mb-6 text-center">Face Swap</h1>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Source Image</label>
+                <div className={`w-full max-w-lg p-6 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
+                    {/* Theme Toggle */}
+                    <div className="flex justify-end mb-4">
+                        <button
+                            onClick={toggleTheme}
+                            className={`p-2 rounded-full ${isDarkMode ? 'bg-gray-600 text-yellow-300' : 'bg-gray-200 text-gray-700'} hover:bg-opacity-80 transition-colors`}
+                        >
+                            <i className={`fas ${isDarkMode ? 'fa-sun' : 'fa-moon'}`}></i>
+                        </button>
+                    </div>
+
+                    {/* Title */}
+                    <h1 className="text-3xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+                        Face Swap Magic
+                    </h1>
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Source Image Upload */}
+                        <div
+                            onDragOver={(e) => handleDragOver(e, setSourceFile)}
+                            onDragLeave={handleDragLeave}
+                            onDrop={(e) => handleDrop(e, setSourceFile)}
+                            className={`border-2 border-dashed rounded-lg p-4 transition-all ${sourceFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
+                        >
+                            <label className="block text-sm font-semibold mb-2">Source Image</label>
                             <input
                                 type="file"
                                 accept="image/*"
                                 onChange={handleSourceChange}
-                                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                className="hidden"
+                                id="source-upload"
                             />
+                            <label
+                                htmlFor="source-upload"
+                                className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                            >
+                                <i className="fas fa-upload mr-2"></i>
+                                {sourceFile ? sourceFile.name : "Choose or Drag Image"}
+                            </label>
+                            {sourceFile && (
+                                <div className="mt-3 flex justify-center">
+                                    <img src={URL.createObjectURL(sourceFile)} alt="Source Preview" className="w-32 h-32 object-cover rounded-lg shadow-md" />
+                                </div>
+                            )}
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Target Image</label>
+
+                        {/* Target Image Upload */}
+                        <div
+                            onDragOver={(e) => handleDragOver(e, setTargetFile)}
+                            onDragLeave={handleDragLeave}
+                            onDrop={(e) => handleDrop(e, setTargetFile)}
+                            className={`border-2 border-dashed rounded-lg p-4 transition-all ${targetFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
+                        >
+                            <label className="block text-sm font-semibold mb-2">Target Image</label>
                             <input
                                 type="file"
                                 accept="image/*"
                                 onChange={handleTargetChange}
-                                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                className="hidden"
+                                id="target-upload"
                             />
+                            <label
+                                htmlFor="target-upload"
+                                className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                            >
+                                <i className="fas fa-upload mr-2"></i>
+                                {targetFile ? targetFile.name : "Choose or Drag Image"}
+                            </label>
+                            {targetFile && (
+                                <div className="mt-3 flex justify-center">
+                                    <img src={URL.createObjectURL(targetFile)} alt="Target Preview" className="w-32 h-32 object-cover rounded-lg shadow-md" />
+                                </div>
+                            )}
                         </div>
+
+                        {/* Submit Button */}
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full py-2 px-4 rounded text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
+                            className={`w-full py-3 px-4 rounded-lg text-white font-semibold transition-all transform hover:scale-105 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'}`}
                         >
-                            {loading ? "Processing..." : "Swap Faces"}
+                            {loading ? (
+                                <div className="flex items-center justify-center">
+                                    <svg className="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Processing...
+                                </div>
+                            ) : (
+                                "Swap Faces"
+                            )}
                         </button>
                     </form>
-                    {error && <p className="mt-4 text-red-600">{error}</p>}
-                    {loading && <div className="mt-4 text-blue-600 animate-pulse">Processing...</div>}
+
+                    {/* Error Message */}
+                    {error && (
+                        <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg flex items-center animate-fade-in">
+                            <i className="fas fa-exclamation-circle mr-2"></i>
+                            {error}
+                        </div>
+                    )}
+
+                    {/* Result */}
                     {resultImage && (
-                        <div className="mt-6">
-                            <h2 className="text-lg font-semibold mb-2">Result</h2>
-                            <img src={resultImage} alt="Swapped Face" className="w-full rounded" />
+                        <div className="mt-6 animate-fade-in">
+                            <h2 className="text-lg font-semibold mb-2 text-center">Result</h2>
+                            <div className="relative">
+                                <img
+                                    src={resultImage}
+                                    alt="Swapped Face"
+                                    className={`w-full rounded-lg shadow-lg cursor-pointer transition-transform duration-300 ${isZoomed ? 'scale-150' : 'scale-100'}`}
+                                    onClick={toggleZoom}
+                                />
+                                <button
+                                    onClick={toggleZoom}
+                                    className="absolute top-2 right-2 p-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition-colors"
+                                >
+                                    <i className={`fas ${isZoomed ? 'fa-search-minus' : 'fa-search-plus'}`}></i>
+                                </button>
+                            </div>
                             <button
                                 onClick={handleDownload}
-                                className="mt-4 w-full py-2 px-4 bg-green-600 text-white rounded hover:bg-blue-700"
+                                className="mt-4 w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all transform hover:scale-105"
                             >
+                                <i className="fas fa-download mr-2"></i>
                                 Download Result
                             </button>
                         </div>
