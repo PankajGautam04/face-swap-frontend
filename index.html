@@ -223,7 +223,7 @@
                 formData.append("target_video", targetVideoFile);
 
                 try {
-                    const response = await fetch("https://face-swap-video-api.onrender.com/swap-video/", {
+                    const response = await fetch("https://face-swap-video-backend.onrender.com/swap-video/", {
                         method: "POST",
                         body: formData,
                     });
