@@ -29,6 +29,8 @@
             const [targetImageFile, setTargetImageFile] = React.useState(null);
             const [sourceVideoFile, setSourceVideoFile] = React.useState(null);
             const [targetVideoFile, setTargetVideoFile] = React.useState(null);
+            const [targetFaces, setTargetFaces] = React.useState([]);
+            const [selectedFaceIndex, setSelectedFaceIndex] = React.useState(null);
             const [resultImage, setResultImage] = React.useState(null);
             const [resultVideo, setResultVideo] = React.useState(null);
             const [loading, setLoading] = React.useState(false);
@@ -83,7 +85,7 @@
                 }
             };
 
-            const handleTargetImageChange = (e) => {
+            const handleTargetImageChange = async (e) => {
                 const file = e.target.files[0];
                 if (file) {
                     if (file.size > 5_000_000) { // 5MB limit
@@ -93,8 +95,30 @@
                     }
                     const renamedFile = renameFileToJpg(file, 'target.jpg');
                     setTargetImageFile(renamedFile);
+
+                    // Detect faces in the target image
+                    const formData = new FormData();
+                    formData.append("target", renamedFile);
+                    try {
+                        const response = await fetch("https://face-swap-api-7fb0.onrender.com/detect-faces/", {
+                            method: "POST",
+                            body: formData,
+                        });
+                        if (!response.ok) {
+                            throw new Error((await response.json()).detail);
+                        }
+                        const data = await response.json();
+                        setTargetFaces(data.faces);
+                        setSelectedFaceIndex(data.faces.length > 0 ? 0 : null); // Default to first face
+                    } catch (err) {
+                        setError("Failed to detect faces in target image: " + err.message);
+                        setTargetFaces([]);
+                        setSelectedFaceIndex(null);
+                    }
                 } else {
                     setTargetImageFile(null);
+                    setTargetFaces([]);
+                    setSelectedFaceIndex(null);
                 }
             };
 
@@ -156,7 +180,7 @@
                 e.currentTarget.classList.remove('border-blue-500');
             };
 
-            const handleImageDrop = (e, setFile) => {
+            const handleImageDrop = async (e, setFile) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove('border-blue-500');
                 const file = e.dataTransfer.files[0];
@@ -168,6 +192,28 @@
                     }
                     const renamedFile = renameFileToJpg(file, setFile === setSourceImageFile ? 'source.jpg' : 'target.jpg');
                     setFile(renamedFile);
+
+                    if (setFile === setTargetImageFile) {
+                        // Detect faces in the target image
+                        const formData = new FormData();
+                        formData.append("target", renamedFile);
+                        try {
+                            const response = await fetch("https://face-swap-api-7fb0.onrender.com/detect-faces/", {
+                                method: "POST",
+                                body: formData,
+                            });
+                            if (!response.ok) {
+                                throw new Error((await response.json()).detail);
+                            }
+                            const data = await response.json();
+                            setTargetFaces(data.faces);
+                            setSelectedFaceIndex(data.faces.length > 0 ? 0 : null);
+                        } catch (err) {
+                            setError("Failed to detect faces in target image: " + err.message);
+                            setTargetFaces([]);
+                            setSelectedFaceIndex(null);
+                        }
+                    }
                 }
             };
 
@@ -218,6 +264,10 @@
                     setError("Please upload both source and target images.");
                     return;
                 }
+                if (targetFaces.length > 0 && selectedFaceIndex === null) {
+                    setError("Please select a face from the target image.");
+                    return;
+                }
 
                 setLoading(true);
                 setError(null);
@@ -227,6 +277,7 @@
                 const formData = new FormData();
                 formData.append("source", sourceImageFile);
                 formData.append("target", targetImageFile);
+                formData.append("face_index", selectedFaceIndex || 0);
 
                 try {
                     const response = await fetch("https://face-swap-api-7fb0.onrender.com/swap-faces/", {
@@ -441,6 +492,28 @@
                                 </div>
                             </div>
 
+                            {/* Display Detected Faces for Selection */}
+                            {targetFaces.length > 1 && (
+                                <div className="mt-4">
+                                    <h3 className="text-sm font-semibold mb-2">Select a Face from Target Image</h3>
+                                    <div className="flex flex-wrap gap-4">
+                                        {targetFaces.map(face => (
+                                            <div
+                                                key={face.index}
+                                                onClick={() => setSelectedFaceIndex(face.index)}
+                                                className={`cursor-pointer p-2 border-2 rounded-lg ${selectedFaceIndex === face.index ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
+                                            >
+                                                <img
+                                                    src={`data:image/jpeg;base64,${face.image_base64}`}
+                                                    alt={`Face ${face.index}`}
+                                                    className="w-16 h-16 object-cover rounded-lg"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Submit Button */}
                             <button
                                 type="submit"
@@ -456,7 +529,7 @@
                                         Processing...
                                     </div>
                                 ) : (
-                                    "Swap Face"
+                                    "Swap Faces"
                                 )}
                             </button>
                         </form>
@@ -554,7 +627,7 @@
                                         Processing...
                                     </div>
                                 ) : (
-                                    "Swap Face"
+                                    "Swap Videos"
                                 )}
                             </button>
                         </form>
