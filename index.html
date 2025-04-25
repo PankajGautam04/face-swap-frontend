@@ -149,7 +149,7 @@
             const handleTargetVideoChange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    if (file.size > 50_000_000) { // 50MB limit for videos
+                    if (file.size > 50_000_000) { // 5MB limit
                         setError("Target video too large (max 50MB).");
                         setTargetVideoFile(null);
                         return;
@@ -223,7 +223,7 @@
                 e.currentTarget.classList.remove('border-blue-500');
                 const file = e.dataTransfer.files[0];
                 if (file) {
-                    if (file.size > 50_000_000) { // 50MB limit
+                    if (file.size > 50_000_000) { // 5MB limit
                         setError(`${setFile === setSourceVideoFile ? 'Source' : 'Target'} video too large (max 50MB).`);
                         setFile(null);
                         return;
@@ -311,7 +311,7 @@
                 formData.append("face_index", selectedFaceIndex || 0);
 
                 try {
-                    console.log("Sending request to /swap-faces/ with face_index:", selectedFaceIndex);
+                    console.log("Sending request to /swap-faces/ with face_index:", selectedFaceIndex || 0); // Debug log
                     const response = await fetch("https://face-swap-api-7fb0.onrender.com/swap-faces/", {
                         method: "POST",
                         body: formData,
