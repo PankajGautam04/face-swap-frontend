@@ -499,31 +499,6 @@
                     const url = URL.createObjectURL(blob);
                     if (activeTab === 'image') {
                         setResultImage(url);
-                        // Update target image with swapped result (source face on target)
-                        const newTargetFile = new File([blob], 'target.jpg', { type: 'image/jpeg' });
-                        setTargetImageFile(newTargetFile);
-                        // Source image remains unchanged (no reverse swap)
-                        const img = new Image();
-                        img.onload = (e) => {
-                            setTargetImageDimensions({
-                                width: e.target.naturalWidth,
-                                height: e.target.naturalHeight
-                            });
-                        };
-                        img.src = URL.createObjectURL(newTargetFile);
-                        // Re-detect faces for the updated target image
-                        const newFormData = new FormData();
-                        newFormData.append("target", newTargetFile);
-                        const faceResponse = await fetch("https://face-detection-pkw8.onrender.com/detect-faces/", {
-                            method: "POST",
-                            body: newFormData,
-                        });
-                        if (faceResponse.ok) {
-                            const faceData = await faceResponse.json();
-                            setTargetFaces(faceData.faces);
-                            setSelectedFaceIndex(faceData.faces.length === 1 ? 0 : null);
-                            setShowFaceSelection(faceData.faces.length > 1);
-                        }
                     } else {
                         setResultVideo(url);
                         setTargetVideoFile(null);
@@ -657,22 +632,6 @@
                                                 Source {activeTab === 'image' ? 'Image' : 'Video'}
                                             </label>
                                             <div className="border-3 border-dashed border-gray-300 rounded-2xl bg-gray-50 upload-box mx-auto">
-                                                <input
-                                                    type="file"
-                                                    accept={activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm'}
-                                                    onChange={activeTab === 'image' ? handleSourceImageChange : handleSourceVideoChange}
-                                                    className="hidden"
-                                                    id="source-upload"
-                                                />
-                                                <label
-                                                    htmlFor="source-upload"
-                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium absolute"
-                                                >
-                                                    <i className="fas fa-upload mr-3"></i>
-                                                    {activeTab === 'image'
-                                                        ? (sourceImageFile ? sourceImageFile.name : 'Upload Source Image')
-                                                        : (sourceVideoFile ? sourceVideoFile.name : 'Upload Source Video')}
-                                                </label>
                                                 {(sourceImageFile || sourceVideoFile) && (
                                                     <div className="preview-container">
                                                         {activeTab === 'image' ? (
@@ -691,6 +650,22 @@
                                                     </div>
                                                 )}
                                             </div>
+                                            <input
+                                                type="file"
+                                                accept={activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm'}
+                                                onChange={activeTab === 'image' ? handleSourceImageChange : handleSourceVideoChange}
+                                                className="hidden"
+                                                id="source-upload"
+                                            />
+                                            <label
+                                                htmlFor="source-upload"
+                                                className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium mt-4 mx-auto block"
+                                            >
+                                                <i className="fas fa-upload mr-3"></i>
+                                                {activeTab === 'image'
+                                                    ? (sourceImageFile ? `Change Source Image (${sourceImageFile.name})` : 'Upload Source Image')
+                                                    : (sourceVideoFile ? `Change Source Video (${sourceVideoFile.name})` : 'Upload Source Video')}
+                                            </label>
                                         </div>
 
                                         {/* Target Upload */}
@@ -699,22 +674,6 @@
                                                 Target {activeTab === 'image' ? 'Image' : 'Video'}
                                             </label>
                                             <div className="border-3 border-dashed border-gray-300 rounded-2xl bg-gray-50 upload-box mx-auto">
-                                                <input
-                                                    type="file"
-                                                    accept={activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm'}
-                                                    onChange={activeTab === 'image' ? handleTargetImageChange : handleTargetVideoChange}
-                                                    className="hidden"
-                                                    id="target-upload"
-                                                />
-                                                <label
-                                                    htmlFor="target-upload"
-                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium absolute"
-                                                >
-                                                    <i className="fas fa-upload mr-3"></i>
-                                                    {activeTab === 'image'
-                                                        ? (targetImageFile ? targetImageFile.name : 'Upload Target Image')
-                                                        : (targetVideoFile ? targetVideoFile.name : 'Upload Target Video')}
-                                                </label>
                                                 {(targetImageFile || targetVideoFile) && (
                                                     <div className="preview-container">
                                                         {activeTab === 'image' ? (
@@ -724,7 +683,7 @@
                                                                     alt="Target Preview"
                                                                     className="rounded-lg shadow-lg"
                                                                 />
-                                                                {targetFaces.length > 0 && (
+                                                                {targetFaces.length > 1 && (
                                                                     targetFaces.map((face, index) => {
                                                                         const position = calculateFacePosition(face);
                                                                         return (
@@ -750,6 +709,22 @@
                                                     </div>
                                                 )}
                                             </div>
+                                            <input
+                                                type="file"
+                                                accept={activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm'}
+                                                onChange={activeTab === 'image' ? handleTargetImageChange : handleTargetVideoChange}
+                                                className="hidden"
+                                                id="target-upload"
+                                            />
+                                            <label
+                                                htmlFor="target-upload"
+                                                className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium mt-4 mx-auto block"
+                                            >
+                                                <i className="fas fa-upload mr-3"></i>
+                                                {activeTab === 'image'
+                                                    ? (targetImageFile ? `Change Target Image (${targetImageFile.name})` : 'Upload Target Image')
+                                                    : (targetVideoFile ? `Change Target Video (${targetVideoFile.name})` : 'Upload Target Video')}
+                                            </label>
                                         </div>
                                     </div>
 
@@ -815,13 +790,13 @@
                                             <img
                                                 src={resultImage}
                                                 alt="Swapped Face"
-                                                className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl"
+                                                className="w-[90%] max-w-[896px] h-auto mx-auto rounded-lg shadow-2xl"
                                             />
                                         )}
                                         {resultVideo && (
                                             <video
                                                 src={resultVideo}
-                                                className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl"
+                                                className="w-[90%] max-w-[896px] h-auto mx-auto rounded-lg shadow-2xl"
                                                 controls
                                             />
                                         )}
