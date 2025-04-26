@@ -3,163 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FaceSwap - Premium AI Face Swapping</title>
+    <title>FaceSwap - Transform Your Moments with AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Elegant typography */
-        html, body {
-            font-family: 'Montserrat', sans-serif;
+        /* Smooth scrolling */
+        html {
             scroll-behavior: smooth;
-            background: #F9FAFB;
-            color: #1F2937;
         }
 
-        h1, h2, h3 {
-            font-family: 'Playfair Display', serif;
+        /* Animations */
+        .animate-slide-up {
+            animation: slideUp 0.8s ease-out;
         }
 
-        /* Navigation bar with subtle shadow */
-        .nav-bar {
-            background: #FFFFFF;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        /* Navigation link with elegant underline */
-        .nav-link {
-            position: relative;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            color: #1F2937;
-            font-size: 1.1rem;
-        }
-
-        .nav-link:hover {
-            color: #D4AF37;
-        }
-
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, #1E3A8A, #D4AF37);
-            animation: underline 0.5s ease-in-out forwards;
-        }
-
-        @keyframes underline {
-            0% { width: 0; }
-            100% { width: 100%; }
-        }
-
-        /* Smooth fade-in animation */
-        .animate-fade-in {
-            animation: fadeIn 1.2s ease-out;
-        }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
+        @keyframes slideUp {
+            0% { opacity: 0; transform: translateY(30px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* Elegant button with gradient */
-        .btn-elegant {
-            background: linear-gradient(90deg, #1E3A8A, #D4AF37);
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        .animate-fade-in {
+            animation: fadeIn 1s ease-in;
         }
 
-        .btn-elegant:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
-        /* Card with subtle shadow */
-        .card-elegant {
-            background: #FFFFFF;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .card-elegant:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        /* Hero gradient */
+        .hero-gradient {
+            background: linear-gradient(135deg, #4F46E5 0%, #14B8A6 100%);
         }
 
         /* Face box styling */
         .face-box {
-            border: 1px solid #E5E7EB;
+            border: 2px solid #e5e7eb;
             border-radius: 12px;
-            padding: 1.5rem;
-            background: #FFFFFF;
+            padding: 1rem;
+            background-color: #ffffff;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .face-box:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-color: #D4AF37;
+            transform: translateY(-6px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .face-box.selected {
-            border-color: #D4AF37;
-            background: #FEFCE8;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+            border-color: #14B8A6;
+            background-color: #ecfdf5;
+            box-shadow: 0 8px 16px rgba(20, 184, 166, 0.3);
         }
 
         .face-box img {
             width: 100%;
-            height: 150px;
+            height: 140px;
             object-fit: cover;
             border-radius: 8px;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .face-box .face-label {
-            font-size: 1rem;
-            font-weight: 500;
-            color: #1F2937;
-        }
-
-        /* Placeholder face box */
-        .face-box-placeholder {
-            border: 1px dashed #E5E7EB;
-            border-radius: 12px;
-            padding: 1.5rem;
-            background: #F9FAFB;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 230px;
-            color: #6B7280;
-            font-weight: 500;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1f2937;
         }
 
         /* Face indicator */
         .face-indicator {
             position: absolute;
-            border: 2px solid rgba(30, 58, 138, 0.5);
-            background: rgba(30, 58, 138, 0.1);
+            border: 3px solid rgba(79, 70, 229, 0.8);
+            background-color: rgba(79, 70, 229, 0.3);
             border-radius: 10px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
         .face-indicator.highlighted {
-            border-color: #D4AF37;
-            background: rgba(212, 175, 55, 0.2);
+            border-color: #14B8A6;
+            background-color: rgba(20, 184, 166, 0.4);
         }
 
         .face-indicator::after {
@@ -167,8 +94,8 @@
             position: absolute;
             top: -12px;
             left: -12px;
-            background: #1E3A8A;
-            color: #FFFFFF;
+            background-color: #4F46E5;
+            color: white;
             width: 24px;
             height: 24px;
             border-radius: 50%;
@@ -176,99 +103,56 @@
             align-items: center;
             justify-content: center;
             font-size: 0.85rem;
-            font-weight: 600;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+        }
+
+        /* Custom button */
+        .btn-primary {
+            background: linear-gradient(90deg, #4F46E5, #14B8A6);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Card hover effect */
+        .card-hover {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
 
         /* Tab styling */
         .tab {
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
         }
 
         .tab.active {
-            background: linear-gradient(90deg, #1E3A8A, #D4AF37);
-            color: #FFFFFF;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Back to Top button */
-        .back-to-top {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            background: linear-gradient(90deg, #1E3A8A, #D4AF37);
-            color: #FFFFFF;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .back-to-top:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Section divider */
-        .section-divider {
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(to right, transparent, rgba(30, 58, 138, 0.2), transparent);
-            margin: 3rem 0;
-        }
-
-        /* Circular team photo */
-        .team-photo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #E5E7EB;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Hero background with gradient overlay */
-        .hero-bg {
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.9), rgba(212, 175, 55, 0.9)), url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
-            position: relative;
+            background: linear-gradient(90deg, #4F46E5, #14B8A6);
+            color: white;
         }
 
         /* Dark mode overrides */
         .dark-mode {
-            background: #1F2937;
-            color: #F5F5F5;
-        }
-
-        .dark-mode .nav-bar {
-            background: #1F2937;
+            background-color: #1F2937;
+            color: #D1D5DB;
         }
 
         .dark-mode .bg-white {
-            background: #374151;
+            background-color: #374151;
         }
 
         .dark-mode .bg-gray-50 {
-            background: #4B5563;
+            background-color: #4B5563;
         }
 
         .dark-mode .bg-gray-100 {
-            background: #1F2937;
+            background-color: #1F2937;
         }
 
         .dark-mode .text-gray-600 {
@@ -280,54 +164,44 @@
         }
 
         .dark-mode .border-gray-300 {
-            border-color: #4B5563;
+            border-color: #6B7280;
         }
 
         .dark-mode .bg-blue-100 {
-            background: #4B5563;
+            background-color: #4B5563;
         }
 
         .dark-mode .text-blue-700 {
-            color: #93C5FD;
+            color: #14B8A6;
         }
 
         .dark-mode .bg-green-600 {
-            background: #10B981;
+            background-color: #10B981;
         }
 
         .dark-mode .bg-red-100 {
-            background: #991B1B;
+            background-color: #7F1D1D;
         }
 
         .dark-mode .text-red-700 {
-            color: #FECDD3;
+            color: #FECACA;
         }
 
         .dark-mode .face-box {
-            background: #374151;
-            border-color: #4B5563;
-        }
-
-        .dark-mode .face-box-placeholder {
-            background: #4B5563;
-            border-color: #4B5563;
-            color: #9CA3AF;
+            background-color: #4B5563;
+            border-color: #6B7280;
         }
 
         .dark-mode .face-box.selected {
-            background: #1C2526;
+            background-color: #064E3B;
         }
 
         .dark-mode .face-box .face-label {
             color: #D1D5DB;
         }
-
-        .dark-mode .section-divider {
-            background: linear-gradient(to right, transparent, rgba(212, 175, 55, 0.2), transparent);
-        }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-900">
     <div id="root"></div>
     <script type="text/babel">
         function App() {
@@ -346,42 +220,11 @@
             const [showFaceSelection, setShowFaceSelection] = React.useState(false);
             const [targetImageDimensions, setTargetImageDimensions] = React.useState({ width: 0, height: 0 });
             const [activeTab, setActiveTab] = React.useState('image');
-            const [activeSection, setActiveSection] = React.useState('home');
-            const [showBackToTop, setShowBackToTop] = React.useState(false);
 
             // Theme toggle
             const toggleTheme = () => {
                 setIsDarkMode(!isDarkMode);
                 document.body.className = `text-gray-900 ${isDarkMode ? 'dark-mode bg-gray-900 text-white' : 'bg-gray-100'}`;
-            };
-
-            // Handle navigation
-            const handleNavClick = (sectionId) => {
-                setActiveSection(sectionId);
-                const section = document.getElementById(sectionId);
-                if (section) {
-                    section.scrollIntoView({ behavior: 'smooth' });
-                }
-            };
-
-            // Handle scroll for Back to Top button visibility
-            React.useEffect(() => {
-                const handleScroll = () => {
-                    if (window.scrollY > 300) {
-                        setShowBackToTop(true);
-                    } else {
-                        setShowBackToTop(false);
-                    }
-                };
-
-                window.addEventListener('scroll', handleScroll);
-                return () => window.removeEventListener('scroll', handleScroll);
-            }, []);
-
-            // Back to Top handler
-            const scrollToTop = () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                setActiveSection('home');
             };
 
             // Rename and convert file to .jpg for images or keep video format
@@ -622,91 +465,26 @@
                 }
             };
 
-            // Render face boxes (always 5)
-            const renderFaceBoxes = () => {
-                const boxes = [];
-                for (let i = 0; i < 5; i++) {
-                    if (i < targetFaces.length) {
-                        const face = targetFaces[i];
-                        boxes.push(
-                            <div
-                                key={i}
-                                className={`face-box ${selectedFaceIndex === i ? 'selected' : ''}`}
-                                onClick={() => handleFaceSelect(i)}
-                                onMouseEnter={() => handleFaceMouseEnter(i)}
-                                onMouseLeave={handleFaceMouseLeave}
-                            >
-                                <img
-                                    src={`data:image/jpeg;base64,${face.image_base64}`}
-                                    alt={`Face ${i + 1}`}
-                                />
-                                <div className="face-label">Face {i + 1}</div>
-                            </div>
-                        );
-                    } else {
-                        boxes.push(
-                            <div key={i} className="face-box-placeholder">
-                                No Face Detected
-                            </div>
-                        );
-                    }
-                }
-                return boxes;
-            };
-
             return (
                 <div className={isDarkMode ? 'dark-mode' : ''}>
                     {/* Navigation */}
-                    <nav className="nav-bar">
+                    <nav className="bg-white shadow-lg fixed w-full z-50">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <div className="flex justify-between h-16 items-center">
+                            <div className="flex justify-between h-16">
                                 <div className="flex items-center">
-                                    <h1 className="text-2xl font-bold text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-blue-900 to-amber-500">
-                                        FaceSwap
-                                    </h1>
+                                    <h1 className="text-3xl font-bold text-gray-900">FaceSwap</h1>
                                 </div>
-                                <div className="flex items-center space-x-8">
-                                    <a
-                                        href="#home"
-                                        onClick={() => handleNavClick('home')}
-                                        className={`nav-link ${activeSection === 'home' ? 'active' : ''}`}
-                                    >
-                                        Home
-                                    </a>
-                                    <a
-                                        href="#features"
-                                        onClick={() => handleNavClick('features')}
-                                        className={`nav-link ${activeSection === 'features' ? 'active' : ''}`}
-                                    >
-                                        Features
-                                    </a>
-                                    <a
-                                        href="#swap"
-                                        onClick={() => handleNavClick('swap')}
-                                        className={`nav-link ${activeSection === 'swap' ? 'active' : ''}`}
-                                    >
-                                        Swap
-                                    </a>
-                                    <a
-                                        href="#contact"
-                                        onClick={() => handleNavClick('contact')}
-                                        className={`nav-link ${activeSection === 'contact' ? 'active' : ''}`}
-                                    >
-                                        Contact
-                                    </a>
-                                    <a
-                                        href="#about"
-                                        onClick={() => handleNavClick('about')}
-                                        className={`nav-link ${activeSection === 'about' ? 'active' : ''}`}
-                                    >
-                                        About Us
-                                    </a>
+                                <div className="flex items-center space-x-6">
+                                    <a href="#home" className="text-gray-600 hover:text-indigo-600 font-medium">Home</a>
+                                    <a href="#swap" className="text-gray-600 hover:text-indigo-600 font-medium">Swap</a>
+                                    <a href="#features" className="text-gray-600 hover:text-indigo-600 font-medium">Features</a>
+                                    <a href="#contact" className="text-gray-600 hover:text-indigo-600 font-medium">Contact</a>
                                     <button
                                         onClick={toggleTheme}
-                                        className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+                                        className="p-2 rounded-full bg-gray-100 hover:bg-gray-200"
                                         title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
                                     >
-                                        <i className={`fas ${isDarkMode ? 'fa-sun' : 'fa-moon'} text-blue-900`}></i>
+                                        <i className={`fas ${isDarkMode ? 'fa-sun' : 'fa-moon'} text-indigo-600`}></i>
                                     </button>
                                 </div>
                             </div>
@@ -714,94 +492,87 @@
                     </nav>
 
                     {/* Hero Section */}
-                    <section id="home" className="pt-32 pb-20">
-                        <div className="hero-bg">
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                                <h2 className="text-5xl sm:text-7xl font-bold text-white animate-fade-in leading-tight">
-                                    Elevate Your Visuals with FaceSwap
-                                </h2>
-                                <p className="mt-6 text-xl sm:text-2xl text-white opacity-90 max-w-3xl mx-auto animate-fade-in">
-                                    Harness the power of AI to seamlessly swap faces in photos and videos, creating stunning transformations with precision and elegance.
-                                </p>
-                                <a
-                                    href="#swap"
-                                    onClick={() => handleNavClick('swap')}
-                                    className="mt-8 inline-block px-10 py-4 rounded-full text-white font-semibold text-lg btn-elegant"
-                                >
-                                    Start Swapping Now
-                                </a>
-                            </div>
+                    <section id="home" className="hero-gradient pt-24 pb-24">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                            <h2 className="text-5xl sm:text-6xl font-extrabold text-white animate-slide-up">
+                                Transform Your Moments with FaceSwap
+                            </h2>
+                            <p className="mt-6 text-xl sm:text-2xl text-white opacity-90 max-w-3xl mx-auto animate-slide-up">
+                                Swap faces in photos and videos effortlessly with our advanced AI technology. Fun, fast, and free!
+                            </p>
+                            <a
+                                href="#swap"
+                                className="mt-10 inline-block px-10 py-4 rounded-full text-white font-semibold text-lg btn-primary"
+                            >
+                                Start Swapping Now
+                            </a>
                         </div>
                     </section>
-
-                    <div className="section-divider"></div>
 
                     {/* Features Section */}
                     <section id="features" className="py-24 bg-white">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-5xl sm:text-6xl font-bold text-center mb-16 animate-fade-in bg-clip-text text-transparent bg-gradient-to-r from-blue-900 to-amber-500">
-                                Why FaceSwap Stands Out
+                            <h2 className="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up">
+                                Why FaceSwap?
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                                <div className="card-elegant p-8 rounded-2xl animate-fade-in">
-                                    <i className="fas fa-bolt text-5xl text-blue-900 mb-4"></i>
-                                    <h3 className="text-2xl font-semibold mb-4 text-gray-900">Precision AI Technology</h3>
-                                    <p className="text-gray-600 text-lg">
-                                        Leverage advanced AI algorithms for flawless face swaps with unmatched accuracy.
+                                <div className="bg-gray-50 p-8 rounded-2xl card-hover animate-slide-up">
+                                    <i className="fas fa-bolt text-4xl text-indigo-600 mb-4"></i>
+                                    <h3 className="text-2xl font-semibold mb-4">Lightning Fast</h3>
+                                    <p className="text-gray-600">
+                                        Process face swaps in seconds with our high-performance AI.
                                     </p>
                                 </div>
-                                <div className="card-elegant p-8 rounded-2xl animate-fade-in">
-                                    <i className="fas fa-lock text-5xl text-blue-900 mb-4"></i>
-                                    <h3 className="text-2xl font-semibold mb-4 text-gray-900">Secure & Private</h3>
-                                    <p className="text-gray-600 text-lg">
-                                        Your data is handled with the highest security standards, ensuring privacy at every step.
+                                <div className="bg-gray-50 p-8 rounded-2xl card-hover animate-slide-up">
+                                    <i className="fas fa-shield-alt text-4xl text-indigo-600 mb-4"></i>
+                                    <h3 className="text-2xl font-semibold mb-4">Secure & Private</h3>
+                                    <p className="text-gray-600">
+                                        Your files are processed securely and deleted after use.
                                     </p>
                                 </div>
-                                <div className="card-elegant p-8 rounded-2xl animate-fade-in">
-                                    <i className="fas fa-video text-5xl text-blue-900 mb-4"></i>
-                                    <h3 className="text-2xl font-semibold mb-4 text-gray-900">Versatile Media Support</h3>
-                                    <p className="text-gray-600 text-lg">
-                                        Swap faces effortlessly across both photos and videos with a single platform.
+                                <div className="bg-gray-50 p-8 rounded-2xl card-hover animate-slide-up">
+                                    <i className="fas fa-video text-4xl text-indigo-600 mb-4"></i>
+                                    <h3 className="text-2xl font-semibold mb-4">Image & Video Support</h3>
+                                    <p className="text-gray-600">
+                                        Swap faces in both photos and videos with ease.
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    <div className="section-divider"></div>
-
                     {/* Face Swap Section */}
                     <section id="swap" className="py-24 bg-gray-100">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-5xl sm:text-6xl font-bold text-center mb-16 animate-fade-in bg-clip-text text-transparent bg-gradient-to-r from-blue-900 to-amber-500">
-                                Craft Your Perfect Face Swap
+                            <h2 className="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up">
+                                Create Your Face Swap
                             </h2>
-                            <div className="bg-white rounded-3xl shadow-xl p-8 sm:p-12">
+                            <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-12">
                                 {/* Tabs */}
-                                <div className="flex justify-center mb-12">
+                                <div className="flex justify-center mb-8">
                                     <button
                                         onClick={() => setActiveTab('image')}
-                                        className={`tab px-8 py-4 rounded-l-full text-lg font-medium ${activeTab === 'image' ? 'active' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                                        className={`tab px-6 py-3 rounded-l-lg text-lg font-medium ${activeTab === 'image' ? 'active' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
                                     >
                                         Image Swap
                                     </button>
                                     <button
                                         onClick={() => setActiveTab('video')}
-                                        className={`tab px-8 py-4 rounded-r-full text-lg font-medium ${activeTab === 'video' ? 'active' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                                        className={`tab px-6 py-3 rounded-r-lg text-lg font-medium ${activeTab === 'video' ? 'active' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
                                     >
                                         Video Swap
                                     </button>
                                 </div>
 
-                                <form onSubmit={handleSubmit} className="space-y-12">
+                                <form onSubmit={handleSubmit} className="space-y-10">
                                     {loading && (
-                                        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+                                        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
                                             <div className="flex flex-col items-center">
-                                                <svg className="animate-spin h-12 w-12 text-white mb-4" viewBox="0 0 24 24">
+                                                <svg className="animate-spin h-10 w-10 text-white mb-4" viewBox="0 0 24 24">
                                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                 </svg>
-                                                <span className="text-white text-xl font-semibold">Processing Your Swap...</span>
+                                                <span className="text-white text-xl font-semibold">Processing...</span>
                                             </div>
                                         </div>
                                     )}
@@ -809,10 +580,10 @@
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                                         {/* Source Upload */}
                                         <div>
-                                            <label className="block text-2xl font-semibold mb-4 text-gray-900">
+                                            <label className="block text-xl font-semibold mb-4">
                                                 Source {activeTab === 'image' ? 'Image' : 'Video'}
                                             </label>
-                                            <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                                            <div className="border-3 border-dashed border-gray-300 rounded-2xl p-8 text-center bg-gray-50">
                                                 <input
                                                     type="file"
                                                     accept={activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm'}
@@ -822,7 +593,7 @@
                                                 />
                                                 <label
                                                     htmlFor="source-upload"
-                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 text-lg font-medium transition-all duration-200"
+                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium"
                                                 >
                                                     <i className="fas fa-upload mr-3"></i>
                                                     {activeTab === 'image'
@@ -835,12 +606,12 @@
                                                             <img
                                                                 src={URL.createObjectURL(sourceImageFile)}
                                                                 alt="Source Preview"
-                                                                className="w-full max-w-md mx-auto rounded-xl shadow-lg"
+                                                                className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
                                                             />
                                                         ) : (
                                                             <video
                                                                 src={URL.createObjectURL(sourceVideoFile)}
-                                                                className="w-full max-w-md mx-auto rounded-xl shadow-lg"
+                                                                className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
                                                                 controls
                                                             />
                                                         )}
@@ -851,10 +622,10 @@
 
                                         {/* Target Upload */}
                                         <div>
-                                            <label className="block text-2xl font-semibold mb-4 text-gray-900">
+                                            <label className="block text-xl font-semibold mb-4">
                                                 Target {activeTab === 'image' ? 'Image' : 'Video'}
                                             </label>
-                                            <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                                            <div className="border-3 border-dashed border-gray-300 rounded-2xl p-8 text-center bg-gray-50">
                                                 <input
                                                     type="file"
                                                     accept={activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm'}
@@ -864,7 +635,7 @@
                                                 />
                                                 <label
                                                     htmlFor="target-upload"
-                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 text-lg font-medium transition-all duration-200"
+                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium"
                                                 >
                                                     <i className="fas fa-upload mr-3"></i>
                                                     {activeTab === 'image'
@@ -878,7 +649,7 @@
                                                                 <img
                                                                     src={URL.createObjectURL(targetImageFile)}
                                                                     alt="Target Preview"
-                                                                    className="w-full max-w-md mx-auto rounded-xl shadow-lg"
+                                                                    className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
                                                                 />
                                                                 {targetFaces.length > 0 && (
                                                                     targetFaces.map((face, index) => {
@@ -899,7 +670,7 @@
                                                         ) : (
                                                             <video
                                                                 src={URL.createObjectURL(targetVideoFile)}
-                                                                className="w-full max-w-md mx-auto rounded-xl shadow-lg"
+                                                                className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
                                                                 controls
                                                             />
                                                         )}
@@ -911,24 +682,38 @@
 
                                     {/* Face Selection */}
                                     {showFaceSelection && targetFaces.length > 1 && (
-                                        <div className="mt-12 animate-fade-in">
-                                            <h3 className="text-2xl font-semibold text-center mb-6 text-gray-900">
-                                                Select a Face to Swap ({targetFaces.length} Faces Detected)
+                                        <div className="mt-8 animate-fade-in">
+                                            <h3 className="text-xl font-semibold text-center mb-6">
+                                                Select a Face to Replace ({targetFaces.length} faces detected)
                                             </h3>
-                                            <div className="grid grid-cols-5 gap-6">
-                                                {renderFaceBoxes()}
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+                                                {targetFaces.map((face, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className={`face-box ${selectedFaceIndex === index ? 'selected' : ''}`}
+                                                        onClick={() => handleFaceSelect(index)}
+                                                        onMouseEnter={() => handleFaceMouseEnter(index)}
+                                                        onMouseLeave={handleFaceMouseLeave}
+                                                    >
+                                                        <img
+                                                            src={`data:image/jpeg;base64,${face.image_base64}`}
+                                                            alt={`Face ${index + 1}`}
+                                                        />
+                                                        <div className="face-label">Face {index + 1}</div>
+                                                    </div>
+                                                ))}
                                             </div>
                                         </div>
                                     )}
 
                                     {/* Submit Button */}
-                                    <div className="text-center mt-12">
+                                    <div className="text-center">
                                         <button
                                             type="submit"
                                             disabled={loading || 
                                                 (activeTab === 'image' && (!sourceImageFile || !targetImageFile)) || 
                                                 (activeTab === 'video' && (!sourceVideoFile || !targetVideoFile))}
-                                            className={`px-12 py-4 rounded-full text-white font-semibold text-xl btn-elegant ${loading || 
+                                            className={`px-10 py-4 rounded-lg text-white font-semibold text-lg btn-primary ${loading || 
                                                 (activeTab === 'image' && (!sourceImageFile || !targetImageFile)) || 
                                                 (activeTab === 'video' && (!sourceVideoFile || !targetVideoFile)) ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         >
@@ -951,27 +736,27 @@
 
                                 {/* Result */}
                                 {(resultImage || resultVideo) && (
-                                    <div className="mt-16 animate-fade-in">
-                                        <h3 className="text-3xl font-semibold text-center mb-8 text-gray-900">Your Face Swap Result</h3>
+                                    <div className="mt-12 animate-slide-up">
+                                        <h3 className="text-2xl font-semibold text-center mb-6">Your Face Swap Result</h3>
                                         {resultImage && (
                                             <img
                                                 src={resultImage}
                                                 alt="Swapped Face"
-                                                className="w-full max-w-4xl mx-auto rounded-xl shadow-xl"
+                                                className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl"
                                             />
                                         )}
                                         {resultVideo && (
                                             <video
                                                 src={resultVideo}
-                                                className="w-full max-w-4xl mx-auto rounded-xl shadow-xl"
+                                                className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl"
                                                 controls
                                             />
                                         )}
-                                        <div className="text-center mt-8">
+                                        <div className="text-center mt-6">
                                             <a
                                                 href={resultImage || resultVideo}
                                                 download={resultImage ? 'faceswap_result.jpg' : 'faceswap_result.mp4'}
-                                                className="inline-flex items-center px-8 py-4 bg-green-600 text-white rounded-full hover:bg-green-700 transition-all duration-200 text-lg font-medium"
+                                                className="inline-flex items-center px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
                                             >
                                                 <i className="fas fa-download mr-2"></i>
                                                 Download Result
@@ -982,7 +767,7 @@
 
                                 {/* Error Message */}
                                 {error && (
-                                    <div className="mt-12 p-6 bg-red-100 text-red-700 rounded-xl text-center animate-fade-in">
+                                    <div className="mt-8 p-6 bg-red-100 text-red-700 rounded-lg text-center animate-fade-in">
                                         <i className="fas fa-exclamation-circle mr-3 text-xl"></i>
                                         {error}
                                     </div>
@@ -991,48 +776,46 @@
                         </div>
                     </section>
 
-                    <div className="section-divider"></div>
-
                     {/* Contact Section */}
                     <section id="contact" className="py-24 bg-white">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-5xl sm:text-6xl font-bold text-center mb-16 animate-fade-in bg-clip-text text-transparent bg-gradient-to-r from-blue-900 to-amber-500">
-                                Get in Touch with Our Experts
+                            <h2 className="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up">
+                                Get in Touch
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                                <div className="animate-fade-in">
-                                    <h3 className="text-3xl font-semibold mb-6 text-gray-900">Contact Information</h3>
-                                    <p className="text-gray-600 mb-4 text-lg">
-                                        Have questions or need assistance? Our team is here to help you with your face-swapping journey.
+                                <div className="animate-slide-up">
+                                    <h3 className="text-2xl font-semibold mb-6">Contact Information</h3>
+                                    <p className="text-gray-600 mb-4">
+                                        Questions or feedback? Our team is here to help you make the most of FaceSwap.
                                     </p>
-                                    <p className="text-gray-600 text-lg"><i className="fas fa-envelope mr-2"></i>support@faceswap.ai</p>
-                                    <p className="text-gray-600 text-lg"><i className="fas fa-phone mr-2"></i>+1 (800) 123-4567</p>
+                                    <p className="text-gray-600"><i className="fas fa-envelope mr-2"></i>support@faceswap.ai</p>
+                                    <p className="text-gray-600"><i className="fas fa-phone mr-2"></i>+1 (800) 123-4567</p>
                                     <div className="flex space-x-4 mt-6">
-                                        <a href="#" className="text-gray-600 hover:text-blue-900 transition-colors duration-200"><i className="fab fa-twitter text-2xl"></i></a>
-                                        <a href="#" className="text-gray-600 hover:text-blue-900 transition-colors duration-200"><i className="fab fa-linkedin text-2xl"></i></a>
-                                        <a href="#" className="text-gray-600 hover:text-blue-900 transition-colors duration-200"><i className="fab fa-github text-2xl"></i></a>
+                                        <a href="#" className="text-gray-600 hover:text-indigo-600"><i className="fab fa-twitter text-2xl"></i></a>
+                                        <a href="#" className="text-gray-600 hover:text-indigo-600"><i className="fab fa-linkedin text-2xl"></i></a>
+                                        <a href="#" className="text-gray-600 hover:text-indigo-600"><i className="fab fa-github text-2xl"></i></a>
                                     </div>
                                 </div>
-                                <div className="bg-gray-50 p-8 rounded-2xl shadow-xl animate-fade-in">
-                                    <h3 className="text-3xl font-semibold mb-6 text-gray-900">Send Us a Message</h3>
+                                <div className="bg-gray-50 p-8 rounded-2xl shadow-lg animate-slide-up">
+                                    <h3 className="text-2xl font-semibold mb-6">Send Us a Message</h3>
                                     <div className="space-y-6">
                                         <input
                                             type="text"
                                             placeholder="Your Name"
-                                            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 transition-all duration-200 text-lg"
+                                            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
                                         />
                                         <input
                                             type="email"
                                             placeholder="Your Email"
-                                            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 transition-all duration-200 text-lg"
+                                            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
                                         />
                                         <textarea
                                             placeholder="Your Message"
                                             rows="5"
-                                            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 transition-all duration-200 text-lg"
+                                            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
                                         ></textarea>
                                         <button
-                                            className="w-full px-6 py-4 bg-gradient-to-r from-blue-900 to-amber-500 text-white rounded-lg hover:from-blue-800 hover:to-amber-600 btn-elegant text-lg font-semibold"
+                                            className="w-full px-6 py-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 btn-primary"
                                         >
                                             Send Message
                                         </button>
@@ -1042,91 +825,46 @@
                         </div>
                     </section>
 
-                    <div className="section-divider"></div>
-
-                    {/* About Us Section */}
-                    <section id="about" className="py-16 bg-gray-100">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-4xl font-bold text-center mb-12 animate-fade-in bg-clip-text text-transparent bg-gradient-to-r from-blue-900 to-amber-500">
-                                Meet Our Team
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <div className="flex flex-col items-center animate-fade-in">
-                                    <div className="team-photo">
-                                        <i className="fas fa-user text-3xl text-gray-600"></i>
-                                    </div>
-                                    <p className="mt-4 text-lg font-medium text-gray-900">Alex Johnson</p>
-                                </div>
-                                <div className="flex flex-col items-center animate-fade-in">
-                                    <div className="team-photo">
-                                        <i className="fas fa-user text-3xl text-gray-600"></i>
-                                    </div>
-                                    <p className="mt-4 text-lg font-medium text-gray-900">Maya Patel</p>
-                                </div>
-                                <div className="flex flex-col items-center animate-fade-in">
-                                    <div className="team-photo">
-                                        <i className="fas fa-user text-3xl text-gray-600"></i>
-                                    </div>
-                                    <p className="mt-4 text-lg font-medium text-gray-900">Chris Lee</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <div className="section-divider"></div>
-
                     {/* Footer */}
-                    <footer className="bg-blue-900 text-white py-12">
+                    <footer className="bg-gray-900 text-white py-12">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
                                 <div>
-                                    <h3 className="text-3xl font-bold mb-6 text-amber-500">
-                                        FaceSwap
-                                    </h3>
-                                    <p className="text-gray-300 text-lg">
-                                        Transform your photos and videos with AI-powered face swapping technology.
+                                    <h3 className="text-2xl font-bold mb-6">FaceSwap</h3>
+                                    <p className="text-gray-400">
+                                        Transform your photos and videos with AI-powered face swapping.
                                     </p>
                                 </div>
                                 <div>
-                                    <h4 className="text-xl font-semibold mb-4 text-white">Quick Links</h4>
-                                    <ul className="space-y-3">
-                                        <li><a href="#home" onClick={() => handleNavClick('home')} className="text-gray-300 hover:text-amber-500 transition-colors duration-200 text-lg">Home</a></li>
-                                        <li><a href="#features" onClick={() => handleNavClick('features')} className="text-gray-300 hover:text-amber-500 transition-colors duration-200 text-lg">Features</a></li>
-                                        <li><a href="#swap" onClick={() => handleNavClick('swap')} className="text-gray-300 hover:text-amber-500 transition-colors duration-200 text-lg">Swap</a></li>
-                                        <li><a href="#contact" onClick={() => handleNavClick('contact')} className="text-gray-300 hover:text-amber-500 transition-colors duration-200 text-lg">Contact</a></li>
-                                        <li><a href="#about" onClick={() => handleNavClick('about')} className="text-gray-300 hover:text-amber-500 transition-colors duration-200 text-lg">About Us</a></li>
+                                    <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+                                    <ul className="space-y-2">
+                                        <li><a href="#home" className="text-gray-400 hover:text-white">Home</a></li>
+                                        <li><a href="#swap" className="text-gray-400 hover:text-white">Swap</a></li>
+                                        <li><a href="#features" className="text-gray-400 hover:text-white">Features</a></li>
+                                        <li><a href="#contact" className="text-gray-400 hover:text-white">Contact</a></li>
                                     </ul>
                                 </div>
                                 <div>
-                                    <h4 className="text-xl font-semibold mb-4 text-white">Resources</h4>
-                                    <ul className="space-y-3">
-                                        <li><a href="#" className="text-gray-300 hover:text-amber-500 transition-colors duration-200 text-lg">Blog</a></li>
-                                        <li><a href="#" className="text-gray-300 hover:text-amber-500 transition-colors duration-200 text-lg">Support</a></li>
+                                    <h4 className="text-lg font-semibold mb-4">Resources</h4>
+                                    <ul className="space-y-2">
+                                        <li><a href="#" className="text-gray-400 hover:text-white">Blog</a></li>
+                                        <li><a href="#" className="text-gray-400 hover:text-white">Support</a></li>
                                     </ul>
                                 </div>
                                 <div>
-                                    <h4 className="text-xl font-semibold mb-4 text-white">Follow Us</h4>
+                                    <h4 className="text-lg font-semibold mb-4">Follow Us</h4>
                                     <div className="flex space-x-4">
-                                        <a href="#" className="text-gray-300 hover:text-amber-500 transition-colors duration-200"><i className="fab fa-twitter text-2xl"></i></a>
-                                        <a href="#" className="text-gray-300 hover:text-amber-500 transition-colors duration-200"><i className="fab fa-linkedin text-2xl"></i></a>
-                                        <a href="#" className="text-gray-300 hover:text-amber-500 transition-colors duration-200"><i className="fab fa-github text-2xl"></i></a>
+                                        <a href="#" className="text-gray-400 hover:text-white"><i className="fab fa-twitter text-2xl"></i></a>
+                                        <a href="#" className="text-gray-400 hover:text-white"><i className="fab fa-linkedin text-2xl"></i></a>
+                                        <a href="#" className="text-gray-400 hover:text-white"><i className="fab fa-github text-2xl"></i></a>
                                     </div>
                                 </div>
                             </div>
-                            <div className="mt-12 text-center text-gray-300 text-lg">
+                            <div className="mt-12 text-center text-gray-400">
                                 <p>© 2025 FaceSwap. All rights reserved.</p>
                             </div>
                         </div>
                     </footer>
-
-                    {/* Back to Top Button */}
-                    <button
-                        onClick={scrollToTop}
-                        className={`back-to-top ${showBackToTop ? 'visible' : ''}`}
-                        title="Back to Top"
-                    >
-                        <i className="fas fa-arrow-up text-xl"></i>
-                    </button>
                 </div>
             );
         }
