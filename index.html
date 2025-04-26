@@ -10,36 +10,26 @@
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Smooth scrolling */
         html {
             scroll-behavior: smooth;
         }
-
-        /* Animations */
         .animate-slide-up {
             animation: slideUp 0.8s ease-out;
         }
-
         @keyframes slideUp {
             0% { opacity: 0; transform: translateY(30px); }
             100% { opacity: 1; transform: translateY(0); }
         }
-
         .animate-fade-in {
             animation: fadeIn 1s ease-in;
         }
-
         @keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
         }
-
-        /* Hero gradient */
         .hero-gradient {
             background: linear-gradient(135deg, #7C3AED 0%, #F59E0B 100%);
         }
-
-        /* Gradient text */
         .gradient-text {
             background: linear-gradient(90deg, #4F46E5, #14B8A6);
             -webkit-background-clip: text;
@@ -47,7 +37,6 @@
             color: transparent;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
-
         .gradient-text-secondary {
             background: linear-gradient(90deg, #EC4899, #8B5CF6);
             -webkit-background-clip: text;
@@ -55,23 +44,18 @@
             color: transparent;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
-
-        /* Dark mode gradient text */
         .dark-mode .gradient-text {
             background: linear-gradient(90deg, #A5B4FC, #2DD4BF);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-
         .dark-mode .gradient-text-secondary {
             background: linear-gradient(90deg, #F9A8D4, #C4B5FD);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-
-        /* Face box styling */
         .face-box {
             border: 2px solid #CBD5E1;
             border-radius: 12px;
@@ -81,18 +65,15 @@
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
         }
-
         .face-box:hover {
             transform: translateY(-6px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
-
         .face-box.selected {
             border-color: #F59E0B;
             background-color: #FEF3C7;
             box-shadow: 0 8px 16px rgba(245, 158, 11, 0.3);
         }
-
         .face-box img {
             width: 100%;
             height: 140px;
@@ -100,30 +81,23 @@
             border-radius: 8px;
             margin-bottom: 0.75rem;
         }
-
         .face-box .face-label {
             font-size: 0.9rem;
             font-weight: 600;
             color: #0F172A;
         }
-
-        /* Custom button */
         .btn-primary {
             background: linear-gradient(90deg, #7C3AED, #F59E0B);
             transition: transform 0.3s, box-shadow 0.3s;
         }
-
         .btn-primary:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
-
-        /* Card hover effect */
         .card-hover {
             transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
             border: 2px solid #CBD5E1;
         }
-
         .card-hover:hover {
             transform: translateY(-8px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
@@ -132,93 +106,69 @@
             background-origin: border-box;
             background-clip: padding-box, border-box;
         }
-
         .dark-mode .card-hover {
             border: 2px solid #475569;
         }
-
         .dark-mode .card-hover:hover {
             background-image: linear-gradient(#1E293B, #1E293B), linear-gradient(90deg, #A78BFA, #FBBF24);
         }
-
-        /* Tab styling */
         .tab {
             transition: all 0.3s;
         }
-
         .tab.active {
             background: linear-gradient(90deg, #7C3AED, #F59E0B);
             color: white;
         }
-
-        /* Dark mode overrides */
         .dark-mode {
             background-color: #0F172A;
             color: #E2E8F0;
         }
-
         .dark-mode .bg-white {
             background-color: #1E293B;
         }
-
         .dark-mode .bg-slate-100 {
             background-color: #334155;
         }
-
         .dark-mode .bg-slate-50 {
             background-color: #0F172A;
         }
-
         .dark-mode .text-slate-600 {
             color: #94A3B8;
         }
-
         .dark-mode .text-slate-900 {
             color: #E2E8F0;
         }
-
         .dark-mode .border-slate-400 {
             border-color: #475569;
         }
-
         .dark-mode .bg-purple-100 {
             background-color: #1E293B;
         }
-
         .dark-mode .text-purple-700 {
             color: #A78BFA;
         }
-
         .dark-mode .bg-amber-600 {
             background-color: #FBBF24;
         }
-
         .dark-mode .bg-red-100 {
             background-color: #7F1D1D;
         }
-
         .dark-mode .text-red-700 {
             color: #FECACA;
         }
-
         .dark-mode .face-box {
             background-color: #1E293B;
             border-color: #475569;
         }
-
         .dark-mode .face-box.selected {
             background-color: #713F12;
         }
-
         .dark-mode .face-box .face-label {
             color: #E2E8F0;
         }
-
         .dark-mode .btn-primary {
             background: linear-gradient(90deg, #A78BFA, #FBBF24);
         }
-
-        /* Fixed size for upload boxes */
         .upload-box {
             width: 500px;
             height: 400px;
@@ -229,7 +179,6 @@
             justify-content: center;
             position: relative;
         }
-
         .upload-box img,
         .upload-box video {
             object-fit: contain;
@@ -238,7 +187,6 @@
             width: 100%;
             height: 100%;
         }
-
         .upload-box .preview-container {
             width: 100%;
             height: 100%;
@@ -259,20 +207,47 @@
             const [targetVideoFile, setTargetVideoFile] = React.useState(null);
             const [targetFaces, setTargetFaces] = React.useState([]);
             const [selectedFaceIndex, setSelectedFaceIndex] = React.useState(null);
-            const [highlightedFaceIndex, setHighlightedFaceIndex] = React.useState(null);
             const [resultImage, setResultImage] = React.useState(null);
             const [resultVideo, setResultVideo] = React.useState(null);
             const [loading, setLoading] = React.useState(false);
             const [error, setError] = React.useState(null);
             const [isDarkMode, setIsDarkMode] = React.useState(false);
             const [showFaceSelection, setShowFaceSelection] = React.useState(false);
-            const [targetImageDimensions, setTargetImageDimensions] = React.useState({ width: 0, height: 0 });
             const [activeTab, setActiveTab] = React.useState('image');
 
             // Theme toggle
             const toggleTheme = () => {
                 setIsDarkMode(!isDarkMode);
             };
+
+            // Reset states when activeTab changes
+            React.useEffect(() => {
+                console.log('Switching tab to:', activeTab);
+                setSourceImageFile(null);
+                setTargetImageFile(null);
+                setSourceVideoFile(null);
+                setTargetVideoFile(null);
+                setTargetFaces([]);
+                setSelectedFaceIndex(null);
+                setShowFaceSelection(false);
+                setResultImage(null);
+                setResultVideo(null);
+                setError(null);
+                setLoading(false);
+                console.log('States reset for tab:', activeTab);
+            }, [activeTab]);
+
+            // Cleanup object URLs to prevent memory leaks
+            React.useEffect(() => {
+                return () => {
+                    if (sourceImageFile) URL.revokeObjectURL(URL.createObjectURL(sourceImageFile));
+                    if (targetImageFile) URL.revokeObjectURL(URL.createObjectURL(targetImageFile));
+                    if (sourceVideoFile) URL.revokeObjectURL(URL.createObjectURL(sourceVideoFile));
+                    if (targetVideoFile) URL.revokeObjectURL(URL.createObjectURL(targetVideoFile));
+                    if (resultImage) URL.revokeObjectURL(resultImage);
+                    if (resultVideo) URL.revokeObjectURL(resultVideo);
+                };
+            }, [sourceImageFile, targetImageFile, sourceVideoFile, targetVideoFile, resultImage, resultVideo]);
 
             // Rename and convert file to .jpg for images or keep video format
             const renameFile = (file, newName, isImage) => {
@@ -293,16 +268,17 @@
                     if (file.size > 5_000_000) {
                         setError("Source image too large (max 5MB).");
                         setSourceImageFile(null);
+                        console.log('Source image too large:', file.size);
                         return;
                     }
                     const renamedFile = renameFile(file, 'source.jpg', true);
                     setSourceImageFile(renamedFile);
                     setSourceVideoFile(null);
-                    setTargetFaces([]); // Reset faces to allow re-detection
-                    setSelectedFaceIndex(null);
-                    setShowFaceSelection(false);
+                    setError(null);
+                    console.log('Source image set:', renamedFile.name);
                 } else {
                     setSourceImageFile(null);
+                    console.log('Source image cleared');
                 }
             };
 
@@ -312,6 +288,7 @@
                     if (file.size > 5_000_000) {
                         setError("Target image too large (max 5MB).");
                         setTargetImageFile(null);
+                        console.log('Target image too large:', file.size);
                         return;
                     }
                     const renamedFile = renameFile(file, 'target.jpg', true);
@@ -320,20 +297,14 @@
                     setTargetFaces([]);
                     setSelectedFaceIndex(null);
                     setShowFaceSelection(false);
-                    
-                    const img = new Image();
-                    img.onload = (e) => {
-                        setTargetImageDimensions({
-                            width: e.target.naturalWidth,
-                            height: e.target.naturalHeight
-                        });
-                    };
-                    img.src = URL.createObjectURL(renamedFile);
+                    setError(null);
+                    console.log('Target image set:', renamedFile.name);
                 } else {
                     setTargetImageFile(null);
                     setTargetFaces([]);
                     setSelectedFaceIndex(null);
                     setShowFaceSelection(false);
+                    console.log('Target image cleared');
                 }
             };
 
@@ -343,13 +314,17 @@
                     if (file.size > 50_000_000) {
                         setError("Source video too large (max 50MB).");
                         setSourceVideoFile(null);
+                        console.log('Source video too large:', file.size);
                         return;
                     }
                     const renamedFile = renameFile(file, 'source.mp4', false);
                     setSourceVideoFile(renamedFile);
                     setSourceImageFile(null);
+                    setError(null);
+                    console.log('Source video set:', renamedFile.name);
                 } else {
                     setSourceVideoFile(null);
+                    console.log('Source video cleared');
                 }
             };
 
@@ -359,6 +334,7 @@
                     if (file.size > 50_000_000) {
                         setError("Target video too large (max 50MB).");
                         setTargetVideoFile(null);
+                        console.log('Target video too large:', file.size);
                         return;
                     }
                     const renamedFile = renameFile(file, 'target.mp4', false);
@@ -367,11 +343,16 @@
                     setTargetFaces([]);
                     setSelectedFaceIndex(null);
                     setShowFaceSelection(false);
+                    setError(null);
+                    console.log('Target video set:', renamedFile.name);
+                    // Auto-detect faces for video
+                    detectFaces();
                 } else {
                     setTargetVideoFile(null);
                     setTargetFaces([]);
                     setSelectedFaceIndex(null);
                     setShowFaceSelection(false);
+                    console.log('Target video cleared');
                 }
             };
 
@@ -379,6 +360,7 @@
             const detectFaces = async () => {
                 if (!targetImageFile && !targetVideoFile) {
                     setError("Please upload a target image or video.");
+                    console.log('No target file uploaded');
                     return false;
                 }
                 
@@ -388,8 +370,10 @@
                 const formData = new FormData();
                 if (targetImageFile) {
                     formData.append("target", targetImageFile);
+                    console.log('Sending target image for face detection:', targetImageFile.name);
                 } else {
                     formData.append("target", targetVideoFile);
+                    console.log('Sending target video for face detection:', targetVideoFile.name);
                 }
                 
                 try {
@@ -405,20 +389,25 @@
                     
                     const data = await response.json();
                     setTargetFaces(data.faces);
+                    console.log('Faces detected:', data.faces);
                     
                     if (data.faces.length === 0) {
                         setError("No faces detected in the target.");
+                        console.log('No faces detected');
                         return false;
-                    } else if (data.faces.length === 1 && activeTab === 'image') {
-                        setSelectedFaceIndex(0); // Auto-select single face
+                    } else if (data.faces.length === 1) {
+                        setSelectedFaceIndex(0);
                         setShowFaceSelection(false);
+                        console.log('Single face auto-selected');
                         return true;
                     } else {
                         setShowFaceSelection(true);
-                        return false; // Wait for user to select a face
+                        console.log('Multiple faces detected, showing selection');
+                        return false;
                     }
                 } catch (err) {
                     setError("Failed to detect faces: " + err.message);
+                    console.error('Face detection error:', err.message);
                     return false;
                 } finally {
                     setLoading(false);
@@ -428,14 +417,7 @@
             // Handle face selection
             const handleFaceSelect = (index) => {
                 setSelectedFaceIndex(index === selectedFaceIndex ? null : index);
-            };
-
-            const handleFaceMouseEnter = (index) => {
-                setHighlightedFaceIndex(index);
-            };
-
-            const handleFaceMouseLeave = () => {
-                setHighlightedFaceIndex(null);
+                console.log('Face selected:', index);
             };
 
             // Handle submit (image or video)
@@ -443,22 +425,24 @@
                 e.preventDefault();
                 if (activeTab === 'image' && (!sourceImageFile || !targetImageFile)) {
                     setError("Please upload both source and target images.");
+                    console.log('Missing image files');
                     return;
                 }
                 if (activeTab === 'video' && (!sourceVideoFile || !targetVideoFile)) {
                     setError("Please upload both source and target videos.");
+                    console.log('Missing video files');
                     return;
                 }
 
-                // Detect faces if not already done
                 if (targetFaces.length === 0) {
+                    console.log('No faces detected yet, calling detectFaces');
                     const canProceed = await detectFaces();
-                    if (!canProceed) return; // Stop if no faces or multiple faces requiring selection
+                    if (!canProceed) return;
                 }
 
-                // For multiple faces, require selection
                 if (targetFaces.length > 1 && selectedFaceIndex === null) {
-                    setError("PLEASE select a face from the target.");
+                    setError("Please select a face from the target.");
+                    console.log('Face selection required');
                     return;
                 }
 
@@ -466,15 +450,18 @@
                 setError(null);
                 setResultImage(null);
                 setResultVideo(null);
+                console.log('Submitting form for', activeTab, 'swap');
 
                 const formData = new FormData();
                 formData.append("face_index", selectedFaceIndex || 0);
                 if (activeTab === 'image') {
                     formData.append("source", sourceImageFile);
                     formData.append("target", targetImageFile);
+                    console.log('Sending image files:', sourceImageFile.name, targetImageFile.name);
                 } else {
                     formData.append("source", sourceVideoFile);
                     formData.append("target", targetVideoFile);
+                    console.log('Sending video files:', sourceVideoFile.name, targetVideoFile.name);
                 }
 
                 try {
@@ -497,15 +484,14 @@
                     const url = URL.createObjectURL(blob);
                     if (activeTab === 'image') {
                         setResultImage(url);
+                        console.log('Image swap result set:', url);
                     } else {
                         setResultVideo(url);
-                        setTargetVideoFile(null);
-                        setTargetFaces([]);
-                        setSelectedFaceIndex(null);
-                        setShowFaceSelection(false);
+                        console.log('Video swap result set:', url);
                     }
                 } catch (err) {
-                    setError(err.message);
+                    setError("Failed to swap faces: " + err.message);
+                    console.error('Swap error:', err.message);
                 } finally {
                     setLoading(false);
                 }
@@ -513,7 +499,6 @@
 
             return (
                 <div className={isDarkMode ? 'dark-mode' : ''}>
-                    {/* Navigation */}
                     <nav className="bg-white shadow-lg fixed w-full z-50">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="flex justify-between h-16">
@@ -524,8 +509,8 @@
                                     <a href="#home" className="gradient-text hover:gradient-text-secondary font-medium">Home</a>
                                     <a href="#swap" className="gradient-text hover:gradient-text-secondary font-medium">Swap</a>
                                     <a href="#features" className="gradient-text hover:gradient-text-secondary font-medium">Features</a>
-                                    <a href="#team" className="gradient-text hover:gradient-text-secondary font-medium">Team</a>
                                     <a href="#contact" className="gradient-text hover:gradient-text-secondary font-medium">Contact</a>
+                                    <a href="#team" className="gradient-text hover:gradient-text-secondary font-medium">Team</a>
                                     <button
                                         onClick={toggleTheme}
                                         className="p-2 rounded-full bg-slate-100 hover:bg-slate-200"
@@ -538,7 +523,6 @@
                         </div>
                     </nav>
 
-                    {/* Hero Section */}
                     <section id="home" className="hero-gradient pt-24 pb-24">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                             <h2 className="text-5xl sm:text-6xl font-extrabold text-white animate-slide-up">
@@ -556,7 +540,6 @@
                         </div>
                     </section>
 
-                    {/* Features Section */}
                     <section id="features" className="py-24 bg-white">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <h2 className="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up gradient-text">
@@ -588,14 +571,12 @@
                         </div>
                     </section>
 
-                    {/* Face Swap Section */}
                     <section id="swap" className="py-24 bg-slate-50">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <h2 className="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up gradient-text">
                                 Create Your Face Swap
                             </h2>
                             <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-12">
-                                {/* Tabs */}
                                 <div className="flex justify-center mb-8">
                                     <button
                                         onClick={() => setActiveTab('image')}
@@ -625,28 +606,29 @@
                                     )}
 
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                                        {/* Source Upload */}
                                         <div>
                                             <label className="block text-xl font-semibold mb-4 gradient-text">
                                                 Source {activeTab === 'image' ? 'Image' : 'Video'}
                                             </label>
                                             <div className="border-3 border-dashed border-slate-400 rounded-2xl bg-slate-100 upload-box mx-auto">
-                                                {(sourceImageFile || sourceVideoFile) && (
+                                                {(sourceImageFile || sourceVideoFile) ? (
                                                     <div className="preview-container">
                                                         {activeTab === 'image' ? (
                                                             <img
-                                                                src={URL.createObjectURL(sourceImageFile)}
+                                                                src={sourceImageFile ? URL.createObjectURL(sourceImageFile) : ''}
                                                                 alt="Source Preview"
                                                                 className="rounded-lg shadow-lg"
                                                             />
                                                         ) : (
                                                             <video
-                                                                src={URL.createObjectURL(sourceVideoFile)}
+                                                                src={sourceVideoFile ? URL.createObjectURL(sourceVideoFile) : ''}
                                                                 className="rounded-lg shadow-lg"
                                                                 controls
                                                             />
                                                         )}
                                                     </div>
+                                                ) : (
+                                                    <p className="text-slate-600">Upload {activeTab === 'image' ? 'image' : 'video'} here</p>
                                                 )}
                                             </div>
                                             <input
@@ -662,33 +644,34 @@
                                             >
                                                 <i className="fas fa-upload mr-3"></i>
                                                 {activeTab === 'image'
-                                                    ? (sourceImageFile ? `Change Source Image (${sourceImageFile.name})` : 'Upload Source Image')
-                                                    : (sourceVideoFile ? `Change Source Video (${sourceVideoFile.name})` : 'Upload Source Video')}
+                                                    ? (sourceImageFile ? `Change Source Image` : 'Upload Source Image')
+                                                    : (sourceVideoFile ? `Change Source Video` : 'Upload Source Video')}
                                             </label>
                                         </div>
 
-                                        {/* Target Upload */}
                                         <div>
                                             <label className="block text-xl font-semibold mb-4 gradient-text">
                                                 Target {activeTab === 'image' ? 'Image' : 'Video'}
                                             </label>
                                             <div className="border-3 border-dashed border-slate-400 rounded-2xl bg-slate-100 upload-box mx-auto">
-                                                {(targetImageFile || targetVideoFile) && (
+                                                {(targetImageFile || targetVideoFile) ? (
                                                     <div className="preview-container">
                                                         {activeTab === 'image' ? (
                                                             <img
-                                                                src={URL.createObjectURL(targetImageFile)}
+                                                                src={targetImageFile ? URL.createObjectURL(targetImageFile) : ''}
                                                                 alt="Target Preview"
                                                                 className="rounded-lg shadow-lg"
                                                             />
                                                         ) : (
                                                             <video
-                                                                src={URL.createObjectURL(targetVideoFile)}
+                                                                src={targetVideoFile ? URL.createObjectURL(targetVideoFile) : ''}
                                                                 className="rounded-lg shadow-lg"
                                                                 controls
                                                             />
                                                         )}
                                                     </div>
+                                                ) : (
+                                                    <p className="text-slate-600">Upload {activeTab === 'image' ? 'image' : 'video'} here</p>
                                                 )}
                                             </div>
                                             <input
@@ -704,13 +687,12 @@
                                             >
                                                 <i className="fas fa-upload mr-3"></i>
                                                 {activeTab === 'image'
-                                                    ? (targetImageFile ? `Change Target Image (${targetImageFile.name})` : 'Upload Target Image')
-                                                    : (targetVideoFile ? `Change Target Video (${targetVideoFile.name})` : 'Upload Target Video')}
+                                                    ? (targetImageFile ? `Change Target Image` : 'Upload Target Image')
+                                                    : (targetVideoFile ? `Change Target Video` : 'Upload Target Video')}
                                             </label>
                                         </div>
                                     </div>
 
-                                    {/* Face Selection */}
                                     {showFaceSelection && targetFaces.length > 1 && (
                                         <div className="mt-8 animate-fade-in">
                                             <h3 className="text-xl font-semibold text-center mb-6 gradient-text">
@@ -722,8 +704,6 @@
                                                         key={index}
                                                         className={`face-box ${selectedFaceIndex === index ? 'selected' : ''}`}
                                                         onClick={() => handleFaceSelect(index)}
-                                                        onMouseEnter={() => handleFaceMouseEnter(index)}
-                                                        onMouseLeave={handleFaceMouseLeave}
                                                     >
                                                         <img
                                                             src={`data:image/jpeg;base64,${face.image_base64}`}
@@ -736,7 +716,6 @@
                                         </div>
                                     )}
 
-                                    {/* Submit Button */}
                                     <div className="text-center">
                                         <button
                                             type="submit"
@@ -764,7 +743,6 @@
                                     </div>
                                 </form>
 
-                                {/* Result */}
                                 {(resultImage || resultVideo) && (
                                     <div className="mt-12 animate-slide-up">
                                         <h3 className="text-2xl font-semibold text-center mb-6 gradient-text">Your Face Swap Result</h3>
@@ -772,15 +750,13 @@
                                             <img
                                                 src={resultImage}
                                                 alt="Swapped Face"
-                                                style={{ width: `${targetImageDimensions.width}px`, height: `${targetImageDimensions.height}px` }}
-                                                className="mx-auto rounded-lg shadow-2xl"
+                                                className="mx-auto rounded-lg shadow-2xl max-w-full"
                                             />
                                         )}
                                         {resultVideo && (
                                             <video
                                                 src={resultVideo}
-                                                style={{ width: `${targetImageDimensions.width}px`, height: `${targetImageDimensions.height}px` }}
-                                                className="mx-auto rounded-lg shadow-2xl"
+                                                className="mx-auto rounded-lg shadow-2xl max-w-full"
                                                 controls
                                             />
                                         )}
@@ -797,7 +773,6 @@
                                     </div>
                                 )}
 
-                                {/* Error Message */}
                                 {error && (
                                     <div className="mt-8 p-6 bg-red-100 text-red-700 rounded-lg text-center animate-fade-in">
                                         <i className="fas fa-exclamation-circle mr-3 text-xl"></i>
@@ -808,7 +783,6 @@
                         </div>
                     </section>
 
-                    {/* Contact Section */}
                     <section id="contact" className="py-24 bg-white">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <h2 className="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up gradient-text">
@@ -823,7 +797,6 @@
                                     <p className="text-slate-600"><i className="fas fa-envelope mr-2"></i>support@faceswap.ai</p>
                                     <p className="text-slate-600"><i className="fas fa-phone mr-2"></i>+1 (800) 123-4567</p>
                                     <div className="flex space-x-4 mt-6">
-                                        <a href="#" className="text-slate-600 hover:text-purple-600"><i className="fab fa-twitter text-2xl"></i></a>
                                         <a href="#" className="text-slate-600 hover:text-purple-600"><i className="fab fa-linkedin text-2xl"></i></a>
                                         <a href="#" className="text-slate-600 hover:text-purple-600"><i className="fab fa-github text-2xl"></i></a>
                                     </div>
@@ -832,7 +805,6 @@
                                     <h3 className="text-2xl font-semibold mb-6 gradient-text">Send Us a Message</h3>
                                     <div className="space-y-6">
                                         <input
-                                            vau
                                             type="text"
                                             placeholder="Your Name"
                                             className="w-full p-4 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
@@ -858,7 +830,6 @@
                         </div>
                     </section>
 
-                    {/* Team Section */}
                     <section id="team" className="py-24 bg-slate-50">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <h2 className="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up gradient-text">
@@ -868,29 +839,22 @@
                                 <div className="bg-white p-8 rounded-2xl card-hover animate-slide-up">
                                     <i className="fas fa-user-circle text-4xl text-purple-600 mb-4"></i>
                                     <h3 className="text-2xl font-semibold mb-2 gradient-text-secondary">Chandrapal Parmar</h3>
-                                    <p className="text-slate-600">
-                                        MCA Student
-                                    </p>
+                                    <p className="text-slate-600">MCA Student</p>
                                 </div>
                                 <div className="bg-white p-8 rounded-2xl card-hover animate-slide-up">
                                     <i className="fas fa-user-circle text-4xl text-purple-600 mb-4"></i>
                                     <h3 className="text-2xl font-semibold mb-2 gradient-text-secondary">Pankaj Gautam</h3>
-                                    <p className="text-slate-600">
-                                        MCA Student
-                                    </p>
+                                    <p className="text-slate-600">MCA Student</p>
                                 </div>
                                 <div className="bg-white p-8 rounded-2xl card-hover animate-slide-up">
                                     <i className="fas fa-user-circle text-4xl text-purple-600 mb-4"></i>
                                     <h3 className="text-2xl font-semibold mb-2 gradient-text-secondary">Siddharth Namdev</h3>
-                                    <p className="text-slate-600">
-                                        MCA Student
-                                    </p>
+                                    <p className="text-slate-600">MCA Student</p>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    {/* Footer */}
                     <footer className="bg-slate-900 text-white py-12">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -906,21 +870,19 @@
                                         <li><a href="#home" className="text-slate-400 hover:text-white">Home</a></li>
                                         <li><a href="#swap" className="text-slate-400 hover:text-white">Swap</a></li>
                                         <li><a href="#features" className="text-slate-400 hover:text-white">Features</a></li>
-                                        <li><a href="#team" className="text-slate-400 hover:text-white">Team</a></li>
                                         <li><a href="#contact" className="text-slate-400 hover:text-white">Contact</a></li>
+                                        <li><a href="#team" className="text-slate-400 hover:text-white">Team</a></li>
                                     </ul>
                                 </div>
                                 <div>
                                     <h4 className="text-lg font-semibold mb-4 gradient-text">Resources</h4>
                                     <ul className="space-y-2">
-                                        <li><a href="#" className="text-slate-400 hover:text-white">Blog</a></li>
                                         <li><a href="#" className="text-slate-400 hover:text-white">Support</a></li>
                                     </ul>
                                 </div>
                                 <div>
                                     <h4 className="text-lg font-semibold mb-4 gradient-text">Follow Us</h4>
                                     <div className="flex space-x-4">
-                                        <a href="#" className="text-slate-400 hover:text-white"><i className="fab fa-twitter text-2xl"></i></a>
                                         <a href="#" className="text-slate-400 hover:text-white"><i className="fab fa-linkedin text-2xl"></i></a>
                                         <a href="#" className="text-slate-400 hover:text-white"><i className="fab fa-github text-2xl"></i></a>
                                     </div>
