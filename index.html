@@ -199,6 +199,36 @@
         .dark-mode .face-box .face-label {
             color: #D1D5DB;
         }
+
+        /* Fixed size for upload boxes */
+        .upload-box {
+            width: 500px;
+            height: 400px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .upload-box img,
+        .upload-box video {
+            object-fit: contain;
+            max-width: 100%;
+            max-height: 100%;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upload-box .preview-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-900">
@@ -357,6 +387,10 @@
                         setError("No faces detected in the target.");
                     } else if (data.faces.length === 1) {
                         setSelectedFaceIndex(0);
+                        if ((activeTab === 'image' && sourceImageFile && targetImageFile) ||
+                            (activeTab === 'video' && sourceVideoFile && targetVideoFile)) {
+                            handleSubmit({ preventDefault: () => {} });
+                        }
                     } else {
                         setShowFaceSelection(true);
                     }
@@ -387,13 +421,16 @@
                 }
                 
                 const previewWidth = 500;
-                const scaleFactor = previewWidth / targetImageDimensions.width;
+                const previewHeight = 400;
+                const scaleFactorX = previewWidth / targetImageDimensions.width;
+                const scaleFactorY = previewHeight / targetImageDimensions.height;
+                const scaleFactor = Math.min(scaleFactorX, scaleFactorY);
                 
                 return {
-                    left: `${face.x * 100}%`,
-                    top: `${face.y * 100}%`,
-                    width: `${face.width * 100}%`,
-                    height: `${face.height * 100}%`,
+                    left: `${face.x * scaleFactor * 100}%`,
+                    top: `${face.y * scaleFactor * 100}%`,
+                    width: `${face.width * scaleFactor * 100}%`,
+                    height: `${face.height * scaleFactor * 100}%`,
                 };
             };
 
@@ -454,8 +491,34 @@
                     const url = URL.createObjectURL(blob);
                     if (activeTab === 'image') {
                         setResultImage(url);
+                        const newTargetFile = new File([blob], 'target.jpg', { type: 'image/jpeg' });
+                        setTargetImageFile(newTargetFile);
+                        const img = new Image();
+                        img.onload = (e) => {
+                            setTargetImageDimensions({
+                                width: e.target.naturalWidth,
+                                height: e.target.naturalHeight
+                            });
+                        };
+                        img.src = URL.createObjectURL(newTargetFile);
+                        const newFormData = new FormData();
+                        newFormData.append("target", newTargetFile);
+                        const faceResponse = await fetch("https://face-detection-pkw8.onrender.com/detect-faces/", {
+                            method: "POST",
+                            body: newFormData,
+                        });
+                        if (faceResponse.ok) {
+                            const faceData = await faceResponse.json();
+                            setTargetFaces(faceData.faces);
+                            setSelectedFaceIndex(null);
+                            setShowFaceSelection(faceData.faces.length > 1);
+                        }
                     } else {
                         setResultVideo(url);
+                        setTargetVideoFile(null);
+                        setTargetFaces([]);
+                        setSelectedFaceIndex(null);
+                        setShowFaceSelection(false);
                     }
                     setShowFaceSelection(false);
                 } catch (err) {
@@ -583,7 +646,7 @@
                                             <label className="block text-xl font-semibold mb-4">
                                                 Source {activeTab === 'image' ? 'Image' : 'Video'}
                                             </label>
-                                            <div className="border-3 border-dashed border-gray-300 rounded-2xl p-8 text-center bg-gray-50">
+                                            <div className="border-3 border-dashed border-gray-300 rounded-2xl bg-gray-50 upload-box mx-auto">
                                                 <input
                                                     type="file"
                                                     accept={activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm'}
@@ -593,7 +656,7 @@
                                                 />
                                                 <label
                                                     htmlFor="source-upload"
-                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium"
+                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium absolute"
                                                 >
                                                     <i className="fas fa-upload mr-3"></i>
                                                     {activeTab === 'image'
@@ -601,17 +664,17 @@
                                                         : (sourceVideoFile ? sourceVideoFile.name : 'Upload Source Video')}
                                                 </label>
                                                 {(sourceImageFile || sourceVideoFile) && (
-                                                    <div className="mt-6">
+                                                    <div className="preview-container">
                                                         {activeTab === 'image' ? (
                                                             <img
                                                                 src={URL.createObjectURL(sourceImageFile)}
                                                                 alt="Source Preview"
-                                                                className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
+                                                                className="rounded-lg shadow-lg"
                                                             />
                                                         ) : (
                                                             <video
                                                                 src={URL.createObjectURL(sourceVideoFile)}
-                                                                className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
+                                                                className="rounded-lg shadow-lg"
                                                                 controls
                                                             />
                                                         )}
@@ -625,7 +688,7 @@
                                             <label className="block text-xl font-semibold mb-4">
                                                 Target {activeTab === 'image' ? 'Image' : 'Video'}
                                             </label>
-                                            <div className="border-3 border-dashed border-gray-300 rounded-2xl p-8 text-center bg-gray-50">
+                                            <div className="border-3 border-dashed border-gray-300 rounded-2xl bg-gray-50 upload-box mx-auto">
                                                 <input
                                                     type="file"
                                                     accept={activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm'}
@@ -635,7 +698,7 @@
                                                 />
                                                 <label
                                                     htmlFor="target-upload"
-                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium"
+                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium absolute"
                                                 >
                                                     <i className="fas fa-upload mr-3"></i>
                                                     {activeTab === 'image'
@@ -643,13 +706,13 @@
                                                         : (targetVideoFile ? targetVideoFile.name : 'Upload Target Video')}
                                                 </label>
                                                 {(targetImageFile || targetVideoFile) && (
-                                                    <div className="relative mt-6">
+                                                    <div className="preview-container">
                                                         {activeTab === 'image' ? (
                                                             <>
                                                                 <img
                                                                     src={URL.createObjectURL(targetImageFile)}
                                                                     alt="Target Preview"
-                                                                    className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
+                                                                    className="rounded-lg shadow-lg"
                                                                 />
                                                                 {targetFaces.length > 0 && (
                                                                     targetFaces.map((face, index) => {
@@ -670,7 +733,7 @@
                                                         ) : (
                                                             <video
                                                                 src={URL.createObjectURL(targetVideoFile)}
-                                                                className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
+                                                                className="rounded-lg shadow-lg"
                                                                 controls
                                                             />
                                                         )}
