@@ -3,43 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Face Swap</title>
+    <title>FaceSwap - Transform Your Moments with AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Custom Tailwind animation for fade-in */
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-in-out;
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
         }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(10px); }
+
+        /* Animations */
+        .animate-slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            0% { opacity: 0; transform: translateY(30px); }
             100% { opacity: 1; transform: translateY(0); }
         }
-        /* Box design for face selection */
+
+        .animate-fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Hero gradient */
+        .hero-gradient {
+            background: linear-gradient(135deg, #4F46E5 0%, #14B8A6 100%);
+        }
+
+        /* Face box styling */
         .face-box {
-            border: 2px solid #4a90e2;
-            border-radius: 8px;
-            padding: 8px;
-            background-color: #f0f7ff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem;
+            background-color: #ffffff;
             text-align: center;
             cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
+
         .face-box:hover {
-            transform: scale(1.05);
-            border-color: #2b6cb0;
+            transform: translateY(-6px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
+
         .face-box.selected {
-            border-color: #28a745;
-            background-color: #e6ffed;
+            border-color: #14B8A6;
+            background-color: #ecfdf5;
+            box-shadow: 0 8px 16px rgba(20, 184, 166, 0.3);
+        }
+
+        .face-box img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+
+        .face-box .face-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        /* Face indicator */
+        .face-indicator {
+            position: absolute;
+            border: 3px solid rgba(79, 70, 229, 0.8);
+            background-color: rgba(79, 70, 229, 0.3);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .face-indicator.highlighted {
+            border-color: #14B8A6;
+            background-color: rgba(20, 184, 166, 0.4);
+        }
+
+        .face-indicator::after {
+            content: attr(data-face-index);
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            background-color: #4F46E5;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* Custom button */
+        .btn-primary {
+            background: linear-gradient(90deg, #4F46E5, #14B8A6);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Card hover effect */
+        .card-hover {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Tab styling */
+        .tab {
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: linear-gradient(90deg, #4F46E5, #14B8A6);
+            color: white;
+        }
+
+        /* Dark mode overrides */
+        .dark-mode {
+            background-color: #1F2937;
+            color: #D1D5DB;
+        }
+
+        .dark-mode .bg-white {
+            background-color: #374151;
+        }
+
+        .dark-mode .bg-gray-50 {
+            background-color: #4B5563;
+        }
+
+        .dark-mode .bg-gray-100 {
+            background-color: #1F2937;
+        }
+
+        .dark-mode .text-gray-600 {
+            color: #D1D5DB;
+        }
+
+        .dark-mode .text-gray-900 {
+            color: #F3F4F6;
+        }
+
+        .dark-mode .border-gray-300 {
+            border-color: #6B7280;
+        }
+
+        .dark-mode .bg-blue-100 {
+            background-color: #4B5563;
+        }
+
+        .dark-mode .text-blue-700 {
+            color: #14B8A6;
+        }
+
+        .dark-mode .bg-green-600 {
+            background-color: #10B981;
+        }
+
+        .dark-mode .bg-red-100 {
+            background-color: #7F1D1D;
+        }
+
+        .dark-mode .text-red-700 {
+            color: #FECACA;
+        }
+
+        .dark-mode .face-box {
+            background-color: #4B5563;
+            border-color: #6B7280;
+        }
+
+        .dark-mode .face-box.selected {
+            background-color: #064E3B;
+        }
+
+        .dark-mode .face-box .face-label {
+            color: #D1D5DB;
+        }
+
+        /* Fixed size for upload boxes */
+        .upload-box {
+            width: 500px;
+            height: 400px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .upload-box img,
+        .upload-box video {
+            object-fit: contain;
+            max-width: 100%;
+            max-height: 100%;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upload-box .preview-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center transition-colors duration-300 p-4 sm:p-6">
+<body class="bg-gray-100 text-gray-900">
     <div id="root"></div>
     <script type="text/babel">
         function App() {
@@ -49,56 +241,48 @@
             const [targetVideoFile, setTargetVideoFile] = React.useState(null);
             const [targetFaces, setTargetFaces] = React.useState([]);
             const [selectedFaceIndex, setSelectedFaceIndex] = React.useState(null);
+            const [highlightedFaceIndex, setHighlightedFaceIndex] = React.useState(null);
             const [resultImage, setResultImage] = React.useState(null);
             const [resultVideo, setResultVideo] = React.useState(null);
             const [loading, setLoading] = React.useState(false);
             const [error, setError] = React.useState(null);
             const [isDarkMode, setIsDarkMode] = React.useState(false);
-            const [isZoomed, setIsZoomed] = React.useState(false);
-            const [showCredits, setShowCredits] = React.useState(false);
-            const [activeTab, setActiveTab] = React.useState('image');
             const [showFaceSelection, setShowFaceSelection] = React.useState(false);
+            const [targetImageDimensions, setTargetImageDimensions] = React.useState({ width: 0, height: 0 });
+            const [activeTab, setActiveTab] = React.useState('image');
 
             // Theme toggle
             const toggleTheme = () => {
                 setIsDarkMode(!isDarkMode);
-                document.body.className = `min-h-screen flex items-center justify-center transition-colors duration-300 p-4 sm:p-6 ${isDarkMode ? 'bg-gray-100' : 'bg-gray-900'}`;
             };
 
-            // Toggle credits modal
-            const toggleCredits = () => {
-                setShowCredits(!showCredits);
-            };
-
-            // Rename and convert file to .jpg for images
-            const renameFileToJpg = (file, newName) => {
-                const fileName = file.name.toLowerCase();
-                if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
-                    return new File([file], newName, { type: file.type });
+            // Rename and convert file to .jpg for images or keep video format
+            const renameFile = (file, newName, isImage) => {
+                if (isImage) {
+                    const fileName = file.name.toLowerCase();
+                    if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
+                        return new File([file], newName, { type: file.type });
+                    }
+                    return new File([file], newName, { type: 'image/jpeg' });
                 }
-                return new File([file], newName, { type: 'image/jpeg' });
+                return new File([file], newName, { type: file.type });
             };
 
-            // Rename video files to .mp4
-            const renameVideoFile = (file, newName) => {
-                const fileName = file.name.toLowerCase();
-                if (fileName.endsWith('.mp4')) {
-                    return new File([file], newName, { type: file.type });
-                }
-                return new File([file], newName, { type: 'video/mp4' });
-            };
-
-            // Handle image file selection with size validation
+            // Handle file selection with size validation
             const handleSourceImageChange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    if (file.size > 5_000_000) { // 5MB limit
+                    if (file.size > 5_000_000) {
                         setError("Source image too large (max 5MB).");
                         setSourceImageFile(null);
                         return;
                     }
-                    const renamedFile = renameFileToJpg(file, 'source.jpg');
+                    const renamedFile = renameFile(file, 'source.jpg', true);
                     setSourceImageFile(renamedFile);
+                    setSourceVideoFile(null);
+                    setTargetFaces([]); // Reset faces to allow re-detection
+                    setSelectedFaceIndex(null);
+                    setShowFaceSelection(false);
                 } else {
                     setSourceImageFile(null);
                 }
@@ -107,16 +291,26 @@
             const handleTargetImageChange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    if (file.size > 5_000_000) { // 5MB limit
+                    if (file.size > 5_000_000) {
                         setError("Target image too large (max 5MB).");
                         setTargetImageFile(null);
                         return;
                     }
-                    const renamedFile = renameFileToJpg(file, 'target.jpg');
+                    const renamedFile = renameFile(file, 'target.jpg', true);
                     setTargetImageFile(renamedFile);
-                    setTargetFaces([]); // Reset faces
+                    setTargetVideoFile(null);
+                    setTargetFaces([]);
                     setSelectedFaceIndex(null);
-                    setShowFaceSelection(false); // Reset face selection UI
+                    setShowFaceSelection(false);
+                    
+                    const img = new Image();
+                    img.onload = (e) => {
+                        setTargetImageDimensions({
+                            width: e.target.naturalWidth,
+                            height: e.target.naturalHeight
+                        });
+                    };
+                    img.src = URL.createObjectURL(renamedFile);
                 } else {
                     setTargetImageFile(null);
                     setTargetFaces([]);
@@ -125,22 +319,17 @@
                 }
             };
 
-            // Handle video file selection with size and duration validation
             const handleSourceVideoChange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    if (file.size > 5_000_000) { // 5MB limit
-                        setError("Source image too large (max 5MB).");
+                    if (file.size > 50_000_000) {
+                        setError("Source video too large (max 50MB).");
                         setSourceVideoFile(null);
                         return;
                     }
-                    const image = document.createElement('img');
-                    image.src = URL.createObjectURL(file);
-                    image.onload = () => {
-                        const renamedFile = renameFileToJpg(file, 'source.jpg');
-                        setSourceVideoFile(renamedFile);
-                        URL.revokeObjectURL(image.src);
-                    };
+                    const renamedFile = renameFile(file, 'source.mp4', false);
+                    setSourceVideoFile(renamedFile);
+                    setSourceImageFile(null);
                 } else {
                     setSourceVideoFile(null);
                 }
@@ -149,573 +338,606 @@
             const handleTargetVideoChange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    if (file.size > 50_000_000) { // 5MB limit
+                    if (file.size > 50_000_000) {
                         setError("Target video too large (max 50MB).");
                         setTargetVideoFile(null);
                         return;
                     }
-                    const video = document.createElement('video');
-                    video.src = URL.createObjectURL(file);
-                    video.onloadedmetadata = () => {
-                        if (video.duration > 5) {
-                            setError("Target video too long (max 5 seconds).");
-                            setTargetVideoFile(null);
-                            URL.revokeObjectURL(video.src);
-                            return;
-                        }
-                        const renamedFile = renameVideoFile(file, 'target.mp4');
-                        setTargetVideoFile(renamedFile);
-                        URL.revokeObjectURL(video.src);
-                    };
+                    const renamedFile = renameFile(file, 'target.mp4', false);
+                    setTargetVideoFile(renamedFile);
+                    setTargetImageFile(null);
+                    setTargetFaces([]);
+                    setSelectedFaceIndex(null);
+                    setShowFaceSelection(false);
                 } else {
                     setTargetVideoFile(null);
+                    setTargetFaces([]);
+                    setSelectedFaceIndex(null);
+                    setShowFaceSelection(false);
                 }
             };
 
-            // Drag-and-drop handlers
-            const handleDragOver = (e, setFile) => {
-                e.preventDefault();
-                e.currentTarget.classList.add('border-blue-500');
-            };
-
-            const handleDragLeave = (e) => {
-                e.preventDefault();
-                e.currentTarget.classList.remove('border-blue-500');
-            };
-
-            const handleImageDrop = (e, setFile) => {
-                e.preventDefault();
-                e.currentTarget.classList.remove('border-blue-500');
-                const file = e.dataTransfer.files[0];
-                if (file) {
-                    if (file.size > 5_000_000) { // 5MB limit
-                        setError(`${setFile === setSourceImageFile ? 'Source' : 'Target'} image too large (max 5MB).`);
-                        setFile(null);
-                        return;
+            // Detect faces in target image or video
+            const detectFaces = async () => {
+                if (!targetImageFile && !targetVideoFile) {
+                    setError("Please upload a target image or video.");
+                    return false;
+                }
+                
+                setLoading(true);
+                setError(null);
+                
+                const formData = new FormData();
+                if (targetImageFile) {
+                    formData.append("target", targetImageFile);
+                } else {
+                    formData.append("target", targetVideoFile);
+                }
+                
+                try {
+                    const response = await fetch("https://face-detection-pkw8.onrender.com/detect-faces/", {
+                        method: "POST",
+                        body: formData,
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || "Failed to detect faces");
                     }
-                    const renamedFile = renameFileToJpg(file, setFile === setSourceImageFile ? 'source.jpg' : 'target.jpg');
-                    setFile(renamedFile);
-                    if (setFile === setTargetImageFile) {
-                        setTargetFaces([]); // Reset faces
-                        setSelectedFaceIndex(null);
+                    
+                    const data = await response.json();
+                    setTargetFaces(data.faces);
+                    
+                    if (data.faces.length === 0) {
+                        setError("No faces detected in the target.");
+                        return false;
+                    } else if (data.faces.length === 1 && activeTab === 'image') {
+                        setSelectedFaceIndex(0); // Auto-select single face
                         setShowFaceSelection(false);
+                        return true;
+                    } else {
+                        setShowFaceSelection(true);
+                        return false; // Wait for user to select a face
                     }
+                } catch (err) {
+                    setError("Failed to detect faces: " + err.message);
+                    return false;
+                } finally {
+                    setLoading(false);
                 }
             };
 
-            const handleVideoDrop = (e, setFile) => {
-                e.preventDefault();
-                e.currentTarget.classList.remove('border-blue-500');
-                const file = e.dataTransfer.files[0];
-                if (file) {
-                    if (file.size > 5_000_000) {
-                        setError(`${setFile === setSourceVideoFile ? 'Source' : 'Target'} image too large (max 5MB).`);
-                        setFile(null);
-                        return;
-                    }
-                    const renamedFile = renameFileToJpg(file, setFile === setSourceVideoFile ? 'source.jpg' : 'target.jpg');
-                    setFile(renamedFile);
-                }
+            // Handle face selection
+            const handleFaceSelect = (index) => {
+                setSelectedFaceIndex(index === selectedFaceIndex ? null : index);
             };
 
-            const handleVideoDropTarget = (e, setFile) => {
-                e.preventDefault();
-                e.currentTarget.classList.remove('border-blue-500');
-                const file = e.dataTransfer.files[0];
-                if (file) {
-                    if (file.size > 50_000_000) { // 5MB limit
-                        setError(`${setFile === setSourceVideoFile ? 'Source' : 'Target'} video too large (max 50MB).`);
-                        setFile(null);
-                        return;
-                    }
-                    const video = document.createElement('video');
-                    video.src = URL.createObjectURL(file);
-                    video.onloadedmetadata = () => {
-                        if (video.duration > 5) {
-                            setError(`${setFile === setSourceVideoFile ? 'Source' : 'Target'} video too long (max 5 seconds).`);
-                            setFile(null);
-                            URL.revokeObjectURL(video.src);
-                            return;
-                        }
-                        const renamedFile = renameVideoFile(file, setFile === setSourceVideoFile ? 'source.mp4' : 'target.mp4');
-                        setFile(renamedFile);
-                        URL.revokeObjectURL(video.src);
-                    };
-                }
+            const handleFaceMouseEnter = (index) => {
+                setHighlightedFaceIndex(index);
             };
 
-            const handleImageSubmit = async (e) => {
+            const handleFaceMouseLeave = () => {
+                setHighlightedFaceIndex(null);
+            };
+
+            // Calculate face indicator position
+            const calculateFacePosition = (face) => {
+                if (!targetImageDimensions.width || !targetImageDimensions.height) {
+                    return { left: 0, top: 0, width: 0, height: 0 };
+                }
+                
+                const previewWidth = 500;
+                const previewHeight = 400;
+                const scaleFactorX = previewWidth / targetImageDimensions.width;
+                const scaleFactorY = previewHeight / targetImageDimensions.height;
+                const scaleFactor = Math.min(scaleFactorX, scaleFactorY);
+                
+                return {
+                    left: `${face.x * scaleFactor * 100}%`,
+                    top: `${face.y * scaleFactor * 100}%`,
+                    width: `${face.width * scaleFactor * 100}%`,
+                    height: `${face.height * scaleFactor * 100}%`,
+                };
+            };
+
+            // Handle submit (image or video)
+            const handleSubmit = async (e) => {
                 e.preventDefault();
-                if (!sourceImageFile || !targetImageFile) {
+                if (activeTab === 'image' && (!sourceImageFile || !targetImageFile)) {
                     setError("Please upload both source and target images.");
                     return;
                 }
+                if (activeTab === 'video' && (!sourceVideoFile || !targetVideoFile)) {
+                    setError("Please upload both source and target videos.");
+                    return;
+                }
+
+                // Detect faces if not already done
+                if (targetFaces.length === 0) {
+                    const canProceed = await detectFaces();
+                    if (!canProceed) return; // Stop if no faces or multiple faces requiring selection
+                }
+
+                // For multiple faces, require selection
+                if (targetFaces.length > 1 && selectedFaceIndex === null) {
+                    setError("Please select a face from the target.");
+                    return;
+                }
 
                 setLoading(true);
                 setError(null);
                 setResultImage(null);
                 setResultVideo(null);
 
-                // Step 1: Detect faces if not already detected
-                if (!showFaceSelection) {
-                    const formData = new FormData();
+                const formData = new FormData();
+                formData.append("face_index", selectedFaceIndex || 0);
+                if (activeTab === 'image') {
+                    formData.append("source", sourceImageFile);
                     formData.append("target", targetImageFile);
-                    try {
-                        console.log("Sending request to /detect-faces/");
-                        const response = await fetch("https://face-detection-pkw8.onrender.com/detect-faces/", {
+                } else {
+                    formData.append("source", sourceVideoFile);
+                    formData.append("target", targetVideoFile);
+                }
+
+                try {
+                    const response = await fetch(
+                        activeTab === 'image'
+                            ? "https://face-swap-api-7fb0.onrender.com/swap-faces/"
+                            : "https://face-swap-api-7fb0.onrender.com/swap-faces-video/",
+                        {
                             method: "POST",
                             body: formData,
-                        });
-                        if (!response.ok) {
-                            const errorData = await response.json();
-                            console.log("Error response:", errorData);
-                            throw new Error(errorData.detail || "Failed to detect faces");
                         }
-                        const data = await response.json();
-                        console.log("Detected faces:", data.faces);
-                        setTargetFaces(data.faces);
+                    );
 
-                        if (data.faces.length === 0) {
-                            setError("No faces detected in the target image.");
-                            setLoading(false);
-                            return;
-                        } else if (data.faces.length === 1) {
-                            // Only one face, proceed with swap
-                            setSelectedFaceIndex(0);
-                        } else {
-                            // Multiple faces, show selection UI
-                            setShowFaceSelection(true);
-                            setLoading(false);
-                            return;
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || `Failed to swap faces in ${activeTab}`);
+                    }
+
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    if (activeTab === 'image') {
+                        setResultImage(url);
+                        // Update target image with swapped result (source face on target)
+                        const newTargetFile = new File([blob], 'target.jpg', { type: 'image/jpeg' });
+                        setTargetImageFile(newTargetFile);
+                        // Source image remains unchanged (no reverse swap)
+                        const img = new Image();
+                        img.onload = (e) => {
+                            setTargetImageDimensions({
+                                width: e.target.naturalWidth,
+                                height: e.target.naturalHeight
+                            });
+                        };
+                        img.src = URL.createObjectURL(newTargetFile);
+                        // Re-detect faces for the updated target image
+                        const newFormData = new FormData();
+                        newFormData.append("target", newTargetFile);
+                        const faceResponse = await fetch("https://face-detection-pkw8.onrender.com/detect-faces/", {
+                            method: "POST",
+                            body: newFormData,
+                        });
+                        if (faceResponse.ok) {
+                            const faceData = await faceResponse.json();
+                            setTargetFaces(faceData.faces);
+                            setSelectedFaceIndex(faceData.faces.length === 1 ? 0 : null);
+                            setShowFaceSelection(faceData.faces.length > 1);
                         }
-                    } catch (err) {
-                        console.error("Fetch error:", err);
-                        setError("Failed to detect faces in target image: " + err.message);
+                    } else {
+                        setResultVideo(url);
+                        setTargetVideoFile(null);
                         setTargetFaces([]);
                         setSelectedFaceIndex(null);
-                        setLoading(false);
-                        return;
+                        setShowFaceSelection(false);
                     }
-                }
-
-                // Step 2: Swap faces with the selected face index
-                if (targetFaces.length > 1 && selectedFaceIndex === null) {
-                    setError("Please select a face from the target image.");
-                    setLoading(false);
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append("source", sourceImageFile);
-                formData.append("target", targetImageFile);
-                formData.append("face_index", selectedFaceIndex || 0);
-
-                try {
-                    console.log("Sending request to /swap-faces/ with face_index:", selectedFaceIndex || 0); // Debug log
-                    const response = await fetch("https://face-swap-api-7fb0.onrender.com/swap-faces/", {
-                        method: "POST",
-                        body: formData,
-                    });
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        console.log("Swap faces error response:", errorData);
-                        throw new Error(errorData.detail || "Failed to swap faces");
-                    }
-                    const blob = await response.blob();
-                    const url = URL.createObjectURL(blob);
-                    setResultImage(url);
-                    setShowFaceSelection(false); // Reset face selection after swap
                 } catch (err) {
-                    console.error("Fetch error during swap:", err);
                     setError(err.message);
                 } finally {
                     setLoading(false);
                 }
-            };
-
-            const handleVideoSubmit = async (e) => {
-                e.preventDefault();
-                if (!sourceVideoFile || !targetVideoFile) {
-                    setError("Please upload both source image and target video.");
-                    return;
-                }
-
-                setLoading(true);
-                setError(null);
-                setResultImage(null);
-                setResultVideo(null);
-
-                const formData = new FormData();
-                formData.append("source_image", sourceVideoFile);
-                formData.append("target_video", targetVideoFile);
-
-                try {
-                    console.log("Sending request to /swap-video/");
-                    const response = await fetch("https://face-swap-video-backend.onrender.com/swap-video/", {
-                        method: "POST",
-                        body: formData,
-                    });
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        console.log("Swap video error response:", errorData);
-                        throw new Error(errorData.detail || "Failed to swap video faces");
-                    }
-                    const blob = await response.blob();
-                    const url = URL.createObjectURL(blob);
-                    setResultVideo(url);
-                } catch (err) {
-                    console.error("Fetch error during video swap:", err);
-                    setError(err.message);
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            const handleDownload = () => {
-                if (resultImage) {
-                    const link = document.createElement("a");
-                    link.href = resultImage;
-                    link.download = "swapped_face_result.jpg";
-                    link.click();
-                } else if (resultVideo) {
-                    const link = document.createElement("a");
-                    link.href = resultVideo;
-                    link.download = "swapped_video_result.mp4";
-                    link.click();
-                }
-            };
-
-            const toggleZoom = () => {
-                setIsZoomed(!isZoomed);
             };
 
             return (
-                <div className={`w-full max-w-3xl sm:max-w-4xl md:max-w-5xl p-4 sm:p-6 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
-                    {/* Header with Theme Toggle and Credits Button */}
-                    <div className="flex justify-between items-center mb-4">
-                        <button
-                            onClick={toggleTheme}
-                            className={`p-2 rounded-full ${isDarkMode ? 'bg-gray-600 text-yellow-300' : 'bg-gray-200 text-gray-700'} hover:bg-opacity-80 transition-colors`}
-                        >
-                            <i className={`fas ${isDarkMode ? 'fa-sun' : 'fa-moon'}`}></i>
-                        </button>
-                        <button
-                            onClick={toggleCredits}
-                            className={`p-2 rounded-full ${isDarkMode ? 'bg-gray-600 text-blue-300' : 'bg-gray-200 text-blue-700'} hover:bg-opacity-80 transition-colors`}
-                        >
-                            <i className="fas fa-users"></i>
-                        </button>
-                    </div>
-
-                    {/* Credits Modal */}
-                    {showCredits && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                            <div className={`p-6 rounded-lg shadow-lg max-w-sm w-full animate-fade-in ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-gray-900'}`}>
-                                <h2 className="text-xl font-bold mb-4 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
-                                    Our Team
-                                </h2>
-                                <ul className="list-disc list-inside space-y-2 text-center">
-                                    <li>Pankaj Gautam</li>
-                                    <li>Siddharth Namdev</li>
-                                    <li>Chandrapal Parmar</li>
-                                </ul>
-                                <button
-                                    onClick={toggleCredits}
-                                    className="mt-4 w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all"
-                                >
-                                    <i className="fas fa-times mr-2"></i>
-                                    Close
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Title */}
-                    <h1 className="text-2xl sm:text-3xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
-                        Face Swap Magic
-                    </h1>
-
-                    {/* Tabs for Image/Video Swap */}
-                    <div className="flex justify-center mb-6">
-                        <button
-                            onClick={() => setActiveTab('image')}
-                            className={`px-4 py-2 rounded-l-lg transition-all ${activeTab === 'image' ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' : 'bg-gray-200 text-gray-700'} hover:bg-opacity-80`}
-                        >
-                            Image Swap
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('video')}
-                            className={`px-4 py-2 rounded-r-lg transition-all ${activeTab === 'video' ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' : 'bg-gray-200 text-gray-700'} hover:bg-opacity-80`}
-                        >
-                            Video Swap
-                        </button>
-                    </div>
-
-                    {/* Image Swap Section */}
-                    {activeTab === 'image' && (
-                        <form onSubmit={handleImageSubmit} className="space-y-6 relative">
-                            {/* Loading Overlay */}
-                            {loading && (
-                                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                                    <div className="flex flex-col items-center">
-                                        <svg className="animate-spin h-8 w-8 text-white mb-2" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        <span className="text-white text-lg">Processing...</span>
-                                    </div>
+                <div className={isDarkMode ? 'dark-mode' : ''}>
+                    {/* Navigation */}
+                    <nav className="bg-white shadow-lg fixed w-full z-50">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="flex justify-between h-16">
+                                <div className="flex items-center">
+                                    <h1 className="text-3xl font-bold text-gray-900">FaceSwap</h1>
                                 </div>
-                            )}
-
-                            {/* Source and Target Images Side by Side on Medium Screens and Above */}
-                            <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
-                                {/* Source Image Upload */}
-                                <div
-                                    onDragOver={(e) => handleDragOver(e, setSourceImageFile)}
-                                    onDragLeave={handleDragLeave}
-                                    onDrop={(e) => handleImageDrop(e, setSourceImageFile)}
-                                    className={`flex-1 border-2 border-dashed rounded-lg p-4 transition-all ${sourceImageFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
-                                >
-                                    <label className="block text-sm font-semibold mb-2">Source Image</label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleSourceImageChange}
-                                        className="hidden"
-                                        id="source-image-upload"
-                                    />
-                                    <label
-                                        htmlFor="source-image-upload"
-                                        className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
-                                    >
-                                        <i className="fas fa-upload mr-2"></i>
-                                        {sourceImageFile ? sourceImageFile.name : "Choose or Drag Image"}
-                                    </label>
-                                    {sourceImageFile && (
-                                        <div className="mt-3 flex justify-center">
-                                            <img src={URL.createObjectURL(sourceImageFile)} alt="Source Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Target Image Upload */}
-                                <div
-                                    onDragOver={(e) => handleDragOver(e, setTargetImageFile)}
-                                    onDragLeave={handleDragLeave}
-                                    onDrop={(e) => handleImageDrop(e, setTargetImageFile)}
-                                    className={`flex-1 border-2 border-dashed rounded-lg p-4 transition-all ${targetImageFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
-                                >
-                                    <label className="block text-sm font-semibold mb-2">Target Image</label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleTargetImageChange}
-                                        className="hidden"
-                                        id="target-image-upload"
-                                    />
-                                    <label
-                                        htmlFor="target-image-upload"
-                                        className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
-                                    >
-                                        <i className="fas fa-upload mr-2"></i>
-                                        {targetImageFile ? targetImageFile.name : "Choose or Drag Image"}
-                                    </label>
-                                    {targetImageFile && (
-                                        <div className="mt-3 flex justify-center">
-                                            <img src={URL.createObjectURL(targetImageFile)} alt="Target Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Display Detected Faces for Selection (Only if Multiple Faces) */}
-                            {showFaceSelection && targetFaces.length > 1 && (
-                                <div className="mt-4">
-                                    <h3 className="text-sm font-semibold mb-2 text-center">Select a Face from Target Image</h3>
-                                    <div className="flex flex-wrap justify-center gap-4">
-                                        {targetFaces.map(face => (
-                                            <div
-                                                key={face.index}
-                                                onClick={() => setSelectedFaceIndex(face.index)}
-                                                className={`face-box ${selectedFaceIndex === face.index ? 'selected' : ''}`}
-                                            >
-                                                <img
-                                                    src={`data:image/jpeg;base64,${face.image_base64}`}
-                                                    alt={`Face ${face.index + 1}`}
-                                                    className="w-16 h-16 object-cover rounded-lg mb-2"
-                                                />
-                                                <p className="text-xs font-semibold">Face {face.index + 1}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Submit Button */}
-                            <button
-                                type="submit"
-                                disabled={loading || !sourceImageFile || !targetImageFile}
-                                className={`w-full py-2 sm:py-3 px-4 rounded-lg text-white font-semibold transition-all transform hover:scale-105 ${loading || !sourceImageFile || !targetImageFile ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'}`}
-                            >
-                                {loading ? (
-                                    <div className="flex items-center justify-center">
-                                        <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5 mr-2 text-white" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Processing...
-                                    </div>
-                                ) : (
-                                    "Swap Faces"
-                                )}
-                            </button>
-                        </form>
-                    )}
-
-                    {/* Video Swap Section */}
-                    {activeTab === 'video' && (
-                        <form onSubmit={handleVideoSubmit} className="space-y-6 relative">
-                            {/* Loading Overlay */}
-                            {loading && (
-                                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                                    <div className="flex flex-col items-center">
-                                        <svg className="animate-spin h-8 w-8 text-white mb-2" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        <span className="text-white text-lg">Processing...</span>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Source and Target Videos Side by Side on Medium Screens and Above */}
-                            <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
-                                {/* Source Video Upload */}
-                                <div
-                                    onDragOver={(e) => handleDragOver(e, setSourceVideoFile)}
-                                    onDragLeave={handleDragLeave}
-                                    onDrop={(e) => handleVideoDrop(e, setSourceVideoFile)}
-                                    className={`flex-1 border-2 border-dashed rounded-lg p-4 transition-all ${sourceVideoFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
-                                >
-                                    <label className="block text-sm font-semibold mb-2">Source Image</label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleSourceVideoChange}
-                                        className="hidden"
-                                        id="source-video-upload"
-                                    />
-                                    <label
-                                        htmlFor="source-video-upload"
-                                        className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
-                                    >
-                                        <i className="fas fa-upload mr-2"></i>
-                                        {sourceVideoFile ? sourceVideoFile.name : "Choose or Drag Image"}
-                                    </label>
-                                    {sourceVideoFile && (
-                                        <div className="mt-3 flex justify-center">
-                                            <img src={URL.createObjectURL(sourceVideoFile)} alt="Source Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" />
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Target Video Upload */}
-                                <div
-                                    onDragOver={(e) => handleDragOver(e, setTargetVideoFile)}
-                                    onDragLeave={handleDragLeave}
-                                    onDrop={(e) => handleVideoDropTarget(e, setTargetVideoFile)}
-                                    className={`flex-1 border-2 border-dashed rounded-lg p-4 transition-all ${targetVideoFile ? 'border-green-500' : 'border-gray-300'} hover:border-blue-500`}
-                                >
-                                    <label className="block text-sm font-semibold mb-2">Target Video</label>
-                                    <input
-                                        type="file"
-                                        accept="video/*"
-                                        onChange={handleTargetVideoChange}
-                                        className="hidden"
-                                        id="target-video-upload"
-                                    />
-                                    <label
-                                        htmlFor="target-video-upload"
-                                        className="cursor-pointer flex items-center justify-center w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base"
-                                    >
-                                        <i className="fas fa-upload mr-2"></i>
-                                        {targetVideoFile ? targetVideoFile.name : "Choose or Drag Video"}
-                                    </label>
-                                    {targetVideoFile && (
-                                        <div className="mt-3 flex justify-center">
-                                            <video src={URL.createObjectURL(targetVideoFile)} className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md" controls />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Submit Button */}
-                            <button
-                                type="submit"
-                                disabled={loading || !sourceVideoFile || !targetVideoFile}
-                                className={`w-full py-2 sm:py-3 px-4 rounded-lg text-white font-semibold transition-all transform hover:scale-105 ${loading || !sourceVideoFile || !targetVideoFile ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'}`}
-                            >
-                                {loading ? (
-                                    <div className="flex items-center justify-center">
-                                        <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5 mr-2 text-white" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Processing...
-                                    </div>
-                                ) : (
-                                    "Swap Videos"
-                                )}
-                            </button>
-                        </form>
-                    )}
-
-                    {/* Error Message */}
-                    {error && (
-                        <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg flex items-center animate-fade-in">
-                            <i className="fas fa-exclamation-circle mr-2"></i>
-                            {error}
-                        </div>
-                    )}
-
-                    {/* Result */}
-                    {(resultImage || resultVideo) && (
-                        <div className="mt-6 animate-fade-in">
-                            <h2 className="text-lg sm:text-xl font-semibold mb-2 text-center">Result</h2>
-                            <div className="relative">
-                                {resultImage && (
-                                    <img
-                                        src={resultImage}
-                                        alt="Swapped Face"
-                                        className={`w-full rounded-lg shadow-lg cursor-pointer transition-transform duration-300 ${isZoomed ? 'scale-150' : 'scale-100'}`}
-                                        onClick={toggleZoom}
-                                    />
-                                )}
-                                {resultVideo && (
-                                    <video
-                                        src={resultVideo}
-                                        className="w-full rounded-lg shadow-lg"
-                                        controls
-                                    />
-                                )}
-                                {resultImage && (
+                                <div className="flex items-center space-x-6">
+                                    <a href="#home" className="text-gray-600 hover:text-indigo-600 font-medium">Home</a>
+                                    <a href="#swap" className="text-gray-600 hover:text-indigo-600 font-medium">Swap</a>
+                                    <a href="#features" className="text-gray-600 hover:text-indigo-600 font-medium">Features</a>
+                                    <a href="#contact" className="text-gray-600 hover:text-indigo-600 font-medium">Contact</a>
                                     <button
-                                        onClick={toggleZoom}
-                                        className="absolute top-2 right-2 p-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition-colors"
+                                        onClick={toggleTheme}
+                                        className="p-2 rounded-full bg-gray-100 hover:bg-gray-200"
+                                        title={`Switch to ${isDarkMode ? 'Bright' : 'Dark'} Mode`}
                                     >
-                                        <i className={`fas ${isZoomed ? 'fa-search-minus' : 'fa-search-plus'}`}></i>
+                                        <i className={`fas ${isDarkMode ? 'fa-sun' : 'fa-moon'} text-indigo-600`}></i>
                                     </button>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <section id="home" className="hero-gradient pt-24 pb-24">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                            <h2 className="text-5xl sm:text-6xl font-extrabold text-white animate-slide-up">
+                                Transform Your Moments with FaceSwap
+                            </h2>
+                            <p className="mt-6 text-xl sm:text-2xl text-white opacity-90 max-w-3xl mx-auto animate-slide-up">
+                                Swap faces in photos and videos effortlessly with our advanced AI technology. Fun, fast, and free!
+                            </p>
+                            <a
+                                href="#swap"
+                                className="mt-10 inline-block px-10 py-4 rounded-full text-white font-semibold text-lg btn-primary"
+                            >
+                                Start Swapping Now
+                            </a>
+                        </div>
+                    </section>
+
+                    {/* Features Section */}
+                    <section id="features" className="py-24 bg-white">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <h2 className="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up">
+                                Why FaceSwap?
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                                <div className="bg-gray-50 p-8 rounded-2xl card-hover animate-slide-up">
+                                    <i className="fas fa-bolt text-4xl text-indigo-600 mb-4"></i>
+                                    <h3 className="text-2xl font-semibold mb-4">Lightning Fast</h3>
+                                    <p className="text-gray-600">
+                                        Process face swaps in seconds with our high-performance AI.
+                                    </p>
+                                </div>
+                                <div className="bg-gray-50 p-8 rounded-2xl card-hover animate-slide-up">
+                                    <i className="fas fa-shield-alt text-4xl text-indigo-600 mb-4"></i>
+                                    <h3 className="text-2xl font-semibold mb-4">Secure & Private</h3>
+                                    <p className="text-gray-600">
+                                        Your files are processed securely and deleted after use.
+                                    </p>
+                                </div>
+                                <div className="bg-gray-50 p-8 rounded-2xl card-hover animate-slide-up">
+                                    <i className="fas fa-video text-4xl text-indigo-600 mb-4"></i>
+                                    <h3 className="text-2xl font-semibold mb-4">Image & Video Support</h3>
+                                    <p className="text-gray-600">
+                                        Swap faces in both photos and videos with ease.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Face Swap Section */}
+                    <section id="swap" className="py-24 bg-gray-100">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <h2 className="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up">
+                                Create Your Face Swap
+                            </h2>
+                            <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-12">
+                                {/* Tabs */}
+                                <div className="flex justify-center mb-8">
+                                    <button
+                                        onClick={() => setActiveTab('image')}
+                                        className={`tab px-6 py-3 rounded-l-lg text-lg font-medium ${activeTab === 'image' ? 'active' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                                    >
+                                        Image Swap
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab('video')}
+                                        className={`tab px-6 py-3 rounded-r-lg text-lg font-medium ${activeTab === 'video' ? 'active' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                                    >
+                                        Video Swap
+                                    </button>
+                                </div>
+
+                                <form onSubmit={handleSubmit} className="space-y-10">
+                                    {loading && (
+                                        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+                                            <div className="flex flex-col items-center">
+                                                <svg className="animate-spin h-10 w-10 text-white mb-4" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                <span className="text-white text-xl font-semibold">Processing...</span>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                                        {/* Source Upload */}
+                                        <div>
+                                            <label className="block text-xl font-semibold mb-4">
+                                                Source {activeTab === 'image' ? 'Image' : 'Video'}
+                                            </label>
+                                            <div className="border-3 border-dashed border-gray-300 rounded-2xl bg-gray-50 upload-box mx-auto">
+                                                <input
+                                                    type="file"
+                                                    accept={activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm'}
+                                                    onChange={activeTab === 'image' ? handleSourceImageChange : handleSourceVideoChange}
+                                                    className="hidden"
+                                                    id="source-upload"
+                                                />
+                                                <label
+                                                    htmlFor="source-upload"
+                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium absolute"
+                                                >
+                                                    <i className="fas fa-upload mr-3"></i>
+                                                    {activeTab === 'image'
+                                                        ? (sourceImageFile ? sourceImageFile.name : 'Upload Source Image')
+                                                        : (sourceVideoFile ? sourceVideoFile.name : 'Upload Source Video')}
+                                                </label>
+                                                {(sourceImageFile || sourceVideoFile) && (
+                                                    <div className="preview-container">
+                                                        {activeTab === 'image' ? (
+                                                            <img
+                                                                src={URL.createObjectURL(sourceImageFile)}
+                                                                alt="Source Preview"
+                                                                className="rounded-lg shadow-lg"
+                                                            />
+                                                        ) : (
+                                                            <video
+                                                                src={URL.createObjectURL(sourceVideoFile)}
+                                                                className="rounded-lg shadow-lg"
+                                                                controls
+                                                            />
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Target Upload */}
+                                        <div>
+                                            <label className="block text-xl font-semibold mb-4">
+                                                Target {activeTab === 'image' ? 'Image' : 'Video'}
+                                            </label>
+                                            <div className="border-3 border-dashed border-gray-300 rounded-2xl bg-gray-50 upload-box mx-auto">
+                                                <input
+                                                    type="file"
+                                                    accept={activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm'}
+                                                    onChange={activeTab === 'image' ? handleTargetImageChange : handleTargetVideoChange}
+                                                    className="hidden"
+                                                    id="target-upload"
+                                                />
+                                                <label
+                                                    htmlFor="target-upload"
+                                                    className="cursor-pointer inline-flex items-center px-8 py-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-lg font-medium absolute"
+                                                >
+                                                    <i className="fas fa-upload mr-3"></i>
+                                                    {activeTab === 'image'
+                                                        ? (targetImageFile ? targetImageFile.name : 'Upload Target Image')
+                                                        : (targetVideoFile ? targetVideoFile.name : 'Upload Target Video')}
+                                                </label>
+                                                {(targetImageFile || targetVideoFile) && (
+                                                    <div className="preview-container">
+                                                        {activeTab === 'image' ? (
+                                                            <>
+                                                                <img
+                                                                    src={URL.createObjectURL(targetImageFile)}
+                                                                    alt="Target Preview"
+                                                                    className="rounded-lg shadow-lg"
+                                                                />
+                                                                {targetFaces.length > 0 && (
+                                                                    targetFaces.map((face, index) => {
+                                                                        const position = calculateFacePosition(face);
+                                                                        return (
+                                                                            <div
+                                                                                key={index}
+                                                                                className={`face-indicator ${highlightedFaceIndex === index || selectedFaceIndex === index ? 'highlighted' : ''}`}
+                                                                                style={position}
+                                                                                data-face-index={index + 1}
+                                                                                onMouseEnter={() => handleFaceMouseEnter(index)}
+                                                                                onMouseLeave={handleFaceMouseLeave}
+                                                                            />
+                                                                        );
+                                                                    })
+                                                                )}
+                                                            </>
+                                                        ) : (
+                                                            <video
+                                                                src={URL.createObjectURL(targetVideoFile)}
+                                                                className="rounded-lg shadow-lg"
+                                                                controls
+                                                            />
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Face Selection */}
+                                    {showFaceSelection && targetFaces.length > 1 && (
+                                        <div className="mt-8 animate-fade-in">
+                                            <h3 className="text-xl font-semibold text-center mb-6">
+                                                Select a Face to Replace ({targetFaces.length} faces detected)
+                                            </h3>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+                                                {targetFaces.map((face, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className={`face-box ${selectedFaceIndex === index ? 'selected' : ''}`}
+                                                        onClick={() => handleFaceSelect(index)}
+                                                        onMouseEnter={() => handleFaceMouseEnter(index)}
+                                                        onMouseLeave={handleFaceMouseLeave}
+                                                    >
+                                                        <img
+                                                            src={`data:image/jpeg;base64,${face.image_base64}`}
+                                                            alt={`Face ${index + 1}`}
+                                                        />
+                                                        <div className="face-label">Face {index + 1}</div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Submit Button */}
+                                    <div className="text-center">
+                                        <button
+                                            type="submit"
+                                            disabled={loading || 
+                                                (activeTab === 'image' && (!sourceImageFile || !targetImageFile)) || 
+                                                (activeTab === 'video' && (!sourceVideoFile || !targetVideoFile))}
+                                            className={`px-10 py-4 rounded-lg text-white font-semibold text-lg btn-primary ${loading || 
+                                                (activeTab === 'image' && (!sourceImageFile || !targetImageFile)) || 
+                                                (activeTab === 'video' && (!sourceVideoFile || !targetVideoFile)) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        >
+                                            {loading ? (
+                                                <div className="flex items-center">
+                                                    <svg className="animate-spin h-6 w-6 mr-3 text-white" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    Processing...
+                                                </div>
+                                            ) : (
+                                                targetFaces.length > 1 && selectedFaceIndex === null 
+                                                    ? "Select a Face" 
+                                                    : `Swap Faces in ${activeTab === 'image' ? 'Image' : 'Video'}`
+                                            )}
+                                        </button>
+                                    </div>
+                                </form>
+
+                                {/* Result */}
+                                {(resultImage || resultVideo) && (
+                                    <div className="mt-12 animate-slide-up">
+                                        <h3 className="text-2xl font-semibold text-center mb-6">Your Face Swap Result</h3>
+                                        {resultImage && (
+                                            <img
+                                                src={resultImage}
+                                                alt="Swapped Face"
+                                                className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl"
+                                            />
+                                        )}
+                                        {resultVideo && (
+                                            <video
+                                                src={resultVideo}
+                                                className="w-full max-w-4xl mx-auto rounded-lg shadow-2xl"
+                                                controls
+                                            />
+                                        )}
+                                        <div className="text-center mt-6">
+                                            <a
+                                                href={resultImage || resultVideo}
+                                                download={resultImage ? 'faceswap_result.jpg' : 'faceswap_result.mp4'}
+                                                className="inline-flex items-center px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                                            >
+                                                <i className="fas fa-download mr-2"></i>
+                                                Download Result
+                                            </a>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Error Message */}
+                                {error && (
+                                    <div className="mt-8 p-6 bg-red-100 text-red-700 rounded-lg text-center animate-fade-in">
+                                        <i className="fas fa-exclamation-circle mr-3 text-xl"></i>
+                                        {error}
+                                    </div>
                                 )}
                             </div>
-                            <button
-                                onClick={handleDownload}
-                                className="mt-4 w-full py-2 sm:py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all transform hover:scale-105"
-                            >
-                                <i className="fas fa-download mr-2"></i>
-                                Download Result
-                            </button>
                         </div>
-                    )}
+                    </section>
+
+                    {/* Contact Section */}
+                    <section id="contact" className="py-24 bg-white">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <h2 className="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up">
+                                Get in Touch
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                                <div className="animate-slide-up">
+                                    <h3 className="text-2xl font-semibold mb-6">Contact Information</h3>
+                                    <p className="text-gray-600 mb-4">
+                                        Questions or feedback? Our team is here to help you make the most of FaceSwap.
+                                    </p>
+                                    <p className="text-gray-600"><i className="fas fa-envelope mr-2"></i>support@faceswap.ai</p>
+                                    <p className="text-gray-600"><i className="fas fa-phone mr-2"></i>+1 (800) 123-4567</p>
+                                    <div className="flex space-x-4 mt-6">
+                                        <a href="#" className="text-gray-600 hover:text-indigo-600"><i className="fab fa-twitter text-2xl"></i></a>
+                                        <a href="#" className="text-gray-600 hover:text-indigo-600"><i className="fab fa-linkedin text-2xl"></i></a>
+                                        <a href="#" className="text-gray-600 hover:text-indigo-600"><i className="fab fa-github text-2xl"></i></a>
+                                    </div>
+                                </div>
+                                <div className="bg-gray-50 p-8 rounded-2xl shadow-lg animate-slide-up">
+                                    <h3 className="text-2xl font-semibold mb-6">Send Us a Message</h3>
+                                    <div className="space-y-6">
+                                        <input
+                                            type="text"
+                                            placeholder="Your Name"
+                                            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                        />
+                                        <input
+                                            type="email"
+                                            placeholder="Your Email"
+                                            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                        />
+                                        <textarea
+                                            placeholder="Your Message"
+                                            rows="5"
+                                            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                        ></textarea>
+                                        <button
+                                            className="w-full px-6 py-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 btn-primary"
+                                        >
+                                            Send Message
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="bg-gray-900 text-white py-12">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+                                <div>
+                                    <h3 className="text-2xl font-bold mb-6">FaceSwap</h3>
+                                    <p className="text-gray-400">
+                                        Transform your photos and videos with AI-powered face swapping.
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+                                    <ul className="space-y-2">
+                                        <li><a href="#home" className="text-gray-400 hover:text-white">Home</a></li>
+                                        <li><a href="#swap" className="text-gray-400 hover:text-white">Swap</a></li>
+                                        <li><a href="#features" className="text-gray-400 hover:text-white">Features</a></li>
+                                        <li><a href="#contact" className="text-gray-400 hover:text-white">Contact</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="text-lg font-semibold mb-4">Resources</h4>
+                                    <ul className="space-y-2">
+                                        <li><a href="#" className="text-gray-400 hover:text-white">Blog</a></li>
+                                        <li><a href="#" className="text-gray-400 hover:text-white">Support</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="text-lg font-semibold mb-4">Follow Us</h4>
+                                    <div className="flex space-x-4">
+                                        <a href="#" className="text-gray-400 hover:text-white"><i className="fab fa-twitter text-2xl"></i></a>
+                                        <a href="#" className="text-gray-400 hover:text-white"><i className="fab fa-linkedin text-2xl"></i></a>
+                                        <a href="#" className="text-gray-400 hover:text-white"><i className="fab fa-github text-2xl"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-12 text-center text-gray-400">
+                                <p>© 2025 FaceSwap. All rights reserved.</p>
+                            </div>
+                        </div>
+                    </footer>
                 </div>
             );
         }
