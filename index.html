@@ -195,6 +195,96 @@
             justify-content: center;
             position: relative;
         }
+        /* Mobile Responsiveness */
+        @media (max-width: 640px) {
+            .text-5xl {
+                font-size: 2.5rem;
+            }
+            .text-4xl {
+                font-size: 2rem;
+            }
+            .text-3xl {
+                font-size: 1.75rem;
+            }
+            .text-2xl {
+                font-size: 1.25rem;
+            }
+            .text-xl {
+                font-size: 1rem;
+            }
+            .text-lg {
+                font-size: 0.875rem;
+            }
+            .py-24 {
+                padding-top: 4rem;
+                padding-bottom: 4rem;
+            }
+            .pt-24 {
+                padding-top: 4rem;
+            }
+            .pb-24 {
+                padding-bottom: 4rem;
+            }
+            .max-w-7xl {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .upload-box {
+                width: 100%;
+                height: 300px;
+            }
+            .face-box img {
+                height: 100px;
+            }
+            .face-box .face-label {
+                font-size: 0.75rem;
+            }
+            .btn-primary {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.875rem;
+            }
+            .grid.grid-cols-1.md:grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            .grid.grid-cols-1.md:grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+            .grid.grid-cols-1.md:grid-cols-4 {
+                grid-template-columns: 1fr;
+            }
+            .navbar-links {
+                display: none;
+            }
+            .navbar-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 4rem;
+                left: 0;
+                right: 0;
+                background-color: white;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                padding: 1rem;
+            }
+            .dark-mode .navbar-links.active {
+                background-color: #1E293B;
+            }
+            .navbar-links.active a {
+                margin: 0.5rem 0;
+                font-size: 1rem;
+            }
+            .navbar-toggle {
+                display: block;
+            }
+        }
+        @media (min-width: 641px) {
+            .navbar-toggle {
+                display: none;
+            }
+            .navbar-links {
+                display: flex;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -214,10 +304,16 @@
             const [isDarkMode, setIsDarkMode] = React.useState(false);
             const [showFaceSelection, setShowFaceSelection] = React.useState(false);
             const [activeTab, setActiveTab] = React.useState('image');
+            const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
             // Theme toggle
             const toggleTheme = () => {
                 setIsDarkMode(!isDarkMode);
+            };
+
+            // Toggle mobile menu
+            const toggleMenu = () => {
+                setIsMenuOpen(!isMenuOpen);
             };
 
             // Reset states when activeTab changes
@@ -505,18 +601,27 @@
                                 <div className="flex items-center">
                                     <h1 className="text-3xl font-bold gradient-text">FaceSwap</h1>
                                 </div>
-                                <div className="flex items-center space-x-6">
-                                    <a href="#home" className="gradient-text hover:gradient-text-secondary font-medium">Home</a>
-                                    <a href="#swap" className="gradient-text hover:gradient-text-secondary font-medium">Swap</a>
-                                    <a href="#features" className="gradient-text hover:gradient-text-secondary font-medium">Features</a>
-                                    <a href="#contact" className="gradient-text hover:gradient-text-secondary font-medium">Contact</a>
-                                    <a href="#team" className="gradient-text hover:gradient-text-secondary font-medium">Team</a>
+                                <div className="flex items-center">
+                                    <div className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
+                                        <a href="#home" className="gradient-text hover:gradient-text-secondary font-medium px-3 py-2">Home</a>
+                                        <a href="#swap" className="gradient-text hover:gradient-text-secondary font-medium px-3 py-2">Swap</a>
+                                        <a href="#features" className="gradient-text hover:gradient-text-secondary font-medium px-3 py-2">Features</a>
+                                        <a href="#contact" className="gradient-text hover:gradient-text-secondary font-medium px-3 py-2">Contact</a>
+                                        <a href="#team" className="gradient-text hover:gradient-text-secondary font-medium px-3 py-2">Team</a>
+                                    </div>
                                     <button
                                         onClick={toggleTheme}
-                                        className="p-2 rounded-full bg-slate-100 hover:bg-slate-200"
+                                        className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 ml-4"
                                         title={`Switch to ${isDarkMode ? 'Bright' : 'Dark'} Mode`}
                                     >
                                         <i className={`fas ${isDarkMode ? 'fa-sun' : 'fa-moon'} text-purple-600`}></i>
+                                    </button>
+                                    <button
+                                        onClick={toggleMenu}
+                                        className="navbar-toggle p-2 rounded-full bg-slate-100 hover:bg-slate-200 ml-2 sm:hidden"
+                                        title="Toggle Menu"
+                                    >
+                                        <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'} text-purple-600`}></i>
                                     </button>
                                 </div>
                             </div>
@@ -888,7 +993,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div className="mt-12 text-center text-slate-400">
+                            <div className="mt-12">
+                                <h4 className="text-lg font-semibold mb-4 gradient-text text-center">Disclaimer</h4>
+                                <p className="text-slate-400 text-center text-sm">
+                                    FaceSwap is intended for educational and entertainment purposes only. Users are responsible for ensuring they have permission to use the images uploaded. Do not use this tool to create harmful, misleading, or illegal content, including deepfakes that violate privacy or spread misinformation. We do not store your images after processing. By using FaceSwap, you agree to use it responsibly and in compliance with applicable laws.
+                                </p>
+                            </div>
+                            <div className="mt-6 text-center text-slate-400">
                                 <p>© 2025 FaceSwap. All rights reserved.</p>
                             </div>
                         </div>
