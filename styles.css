@@ -193,13 +193,23 @@ html {
     justify-content: center;
     position: relative;
 }
-/* Position upload button at bottom center of upload-box */
+/* Style for upload button container outside the upload-box */
 .upload-button-container {
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-top: 1rem;
     text-align: center;
+}
+/* Style the upload button to match the edited image */
+.upload-button-container label {
+    background: linear-gradient(90deg, #E2E8F0, #FBBF24);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #0F172A;
+    transition: background 0.3s;
+}
+.upload-button-container label:hover {
+    background: linear-gradient(90deg, #D1D5DB, #F59E0B);
 }
 /* Mobile Responsiveness */
 @media (max-width: 640px) {
