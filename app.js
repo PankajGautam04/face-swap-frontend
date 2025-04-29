@@ -533,28 +533,26 @@
                                             'p',
                                             { className: 'text-slate-600' },
                                             `Upload ${activeTab === 'image' ? 'image' : 'video'} here`
-                                        ),
+                                        )
+                                    ),
+                                    React.createElement(
+                                        'div',
+                                        { className: 'upload-button-container' },
+                                        React.createElement('input', {
+                                            type: 'file',
+                                            accept: activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm',
+                                            onChange: activeTab === 'image' ? handleSourceImageChange : handleSourceVideoChange,
+                                            className: 'hidden',
+                                            id: 'source-upload'
+                                        }),
                                         React.createElement(
-                                            'div',
-                                            { className: 'upload-button-container' },
-                                            React.createElement('input', {
-                                                type: 'file',
-                                                accept: activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm',
-                                                onChange: activeTab === 'image' ? handleSourceImageChange : handleSourceVideoChange,
-                                                className: 'hidden',
-                                                id: 'source-upload'
-                                            }),
-                                            React.createElement(
-                                                'label',
-                                                {
-                                                    htmlFor: 'source-upload',
-                                                    className: 'cursor-pointer inline-flex items-center px-8 py-4 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-lg font-medium'
-                                                },
-                                                React.createElement('i', { className: 'fas fa-upload mr-3' }),
-                                                activeTab === 'image'
-                                                    ? (sourceImageFile ? 'Change Source Image' : 'Upload Source Image')
-                                                    : (sourceVideoFile ? 'Change Source Video' : 'Upload Source Video')
-                                            )
+                                            'label',
+                                            {
+                                                htmlFor: 'source-upload',
+                                                className: 'cursor-pointer inline-flex items-center'
+                                            },
+                                            React.createElement('i', { className: 'fas fa-upload mr-3' }),
+                                            `Upload Source ${activeTab === 'image' ? 'Image' : 'Video'}`
                                         )
                                     )
                                 ),
@@ -591,28 +589,26 @@
                                             'p',
                                             { className: 'text-slate-600' },
                                             `Upload ${activeTab === 'image' ? 'image' : 'video'} here`
-                                        ),
+                                        )
+                                    ),
+                                    React.createElement(
+                                        'div',
+                                        { className: 'upload-button-container' },
+                                        React.createElement('input', {
+                                            type: 'file',
+                                            accept: activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm',
+                                            onChange: activeTab === 'image' ? handleTargetImageChange : handleTargetVideoChange,
+                                            className: 'hidden',
+                                            id: 'target-upload'
+                                        }),
                                         React.createElement(
-                                            'div',
-                                            { className: 'upload-button-container' },
-                                            React.createElement('input', {
-                                                type: 'file',
-                                                accept: activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm',
-                                                onChange: activeTab === 'image' ? handleTargetImageChange : handleTargetVideoChange,
-                                                className: 'hidden',
-                                                id: 'target-upload'
-                                            }),
-                                            React.createElement(
-                                                'label',
-                                                {
-                                                    htmlFor: 'target-upload',
-                                                    className: 'cursor-pointer inline-flex items-center px-8 py-4 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-lg font-medium'
-                                                },
-                                                React.createElement('i', { className: 'fas fa-upload mr-3' }),
-                                                activeTab === 'image'
-                                                    ? (targetImageFile ? 'Change Target Image' : 'Upload Target Image')
-                                                    : (targetVideoFile ? 'Change Target Video' : 'Upload Target Video')
-                                            )
+                                            'label',
+                                            {
+                                                htmlFor: 'target-upload',
+                                                className: 'cursor-pointer inline-flex items-center'
+                                            },
+                                            React.createElement('i', { className: 'fas fa-upload mr-3' }),
+                                            `Upload Target ${activeTab === 'image' ? 'Image' : 'Video'}`
                                         )
                                     )
                                 )
