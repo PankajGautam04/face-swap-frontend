@@ -533,28 +533,28 @@
                                             'p',
                                             { className: 'text-slate-600' },
                                             `Upload ${activeTab === 'image' ? 'image' : 'video'} here`
-                                        ),
+                                        )
+                                    ),
+                                    React.createElement(
+                                        'div',
+                                        { className: 'upload-button-container' },
+                                        React.createElement('input', {
+                                            type: 'file',
+                                            accept: activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm',
+                                            onChange: activeTab === 'image' ? handleSourceImageChange : handleSourceVideoChange,
+                                            className: 'hidden',
+                                            id: 'source-upload'
+                                        }),
                                         React.createElement(
-                                            'div',
-                                            { className: 'upload-button-container' },
-                                            React.createElement('input', {
-                                                type: 'file',
-                                                accept: activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm',
-                                                onChange: activeTab === 'image' ? handleSourceImageChange : handleSourceVideoChange,
-                                                className: 'hidden',
-                                                id: 'source-upload'
-                                            }),
-                                            React.createElement(
-                                                'label',
-                                                {
-                                                    htmlFor: 'source-upload',
-                                                    className: 'cursor-pointer inline-flex items-center px-8 py-4 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-lg font-medium'
-                                                },
-                                                React.createElement('i', { className: 'fas fa-upload mr-3' }),
-                                                activeTab === 'image'
-                                                    ? (sourceImageFile ? 'Change Source Image' : 'Upload Source Image')
-                                                    : (sourceVideoFile ? 'Change Source Video' : 'Upload Source Video')
-                                            )
+                                            'label',
+                                            {
+                                                htmlFor: 'source-upload',
+                                                className: 'cursor-pointer inline-flex items-center px-8 py-4 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-lg font-medium'
+                                            },
+                                            React.createElement('i', { className: 'fas fa-upload mr-3' }),
+                                            activeTab === 'image'
+                                                ? (sourceImageFile ? 'Change Source Image' : 'Upload Source Image')
+                                                : (sourceVideoFile ? 'Change Source Video' : 'Upload Source Video')
                                         )
                                     )
                                 ),
@@ -591,28 +591,28 @@
                                             'p',
                                             { className: 'text-slate-600' },
                                             `Upload ${activeTab === 'image' ? 'image' : 'video'} here`
-                                        ),
+                                        )
+                                    ),
+                                    React.createElement(
+                                        'div',
+                                        { className: 'upload-button-container' },
+                                        React.createElement('input', {
+                                            type: 'file',
+                                            accept: activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm',
+                                            onChange: activeTab === 'image' ? handleTargetImageChange : handleTargetVideoChange,
+                                            className: 'hidden',
+                                            id: 'target-upload'
+                                        }),
                                         React.createElement(
-                                            'div',
-                                            { className: 'upload-button-container' },
-                                            React.createElement('input', {
-                                                type: 'file',
-                                                accept: activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm',
-                                                onChange: activeTab === 'image' ? handleTargetImageChange : handleTargetVideoChange,
-                                                className: 'hidden',
-                                                id: 'target-upload'
-                                            }),
-                                            React.createElement(
-                                                'label',
-                                                {
-                                                    htmlFor: 'target-upload',
-                                                    className: 'cursor-pointer inline-flex items-center px-8 py-4 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-lg font-medium'
-                                                },
-                                                React.createElement('i', { className: 'fas fa-upload mr-3' }),
-                                                activeTab === 'image'
-                                                    ? (targetImageFile ? 'Change Target Image' : 'Upload Target Image')
-                                                    : (targetVideoFile ? 'Change Target Video' : 'Upload Target Video')
-                                            )
+                                            'label',
+                                            {
+                                                htmlFor: 'target-upload',
+                                                className: 'cursor-pointer inline-flex items-center px-8 py-4 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-lg font-medium'
+                                            },
+                                            React.createElement('i', { className: 'fas fa-upload mr-3' }),
+                                            activeTab === 'image'
+                                                ? (targetImageFile ? 'Change Target Image' : 'Upload Target Image')
+                                                : (targetVideoFile ? 'Change Target Video' : 'Upload Target Video')
                                         )
                                     )
                                 )
@@ -733,7 +733,6 @@
                             React.createElement('h3', { className: 'text-2xl font-semibold mb-6 gradient-text' }, 'Contact Information'),
                             React.createElement('p', { className: 'text-slate-600 mb-4' }, 'Questions or feedback? Our team is here to help you make the most of FaceSwap.'),
                             React.createElement('p', { className: 'text-slate-600' }, React.createElement('i', { className: 'fas fa-envelope mr-2' }), 'pankajgautamprk@gmail.com'),
-                            React.createElement('p', { className: 'text-slate-600' }, React.createElement('i', { className: 'fas fa-phone mr-2' }), '+1 (800) 123-4567'),
                             React.createElement(
                                 'div',
                                 { className: 'flex space-x-4 mt-6' },
@@ -759,7 +758,7 @@
             ),
             React.createElement(
                 'section',
-                { id: 'team', className: 'py-24 bg-slate-50' },
+                { id: 'team', class RIGHTS: "© 2025 FaceSwap. All rights reserved." },
                 React.createElement(
                     'div',
                     { className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8' },
