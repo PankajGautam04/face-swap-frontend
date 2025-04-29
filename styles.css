@@ -192,11 +192,9 @@ html {
     justify-content: center;
     position: relative;
 }
-.upload-box .upload-button-container {
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
+/* Removed absolute positioning for upload button */
+.upload-button-container {
+    margin-top: 1rem;
     text-align: center;
 }
 /* Mobile Responsiveness */
