@@ -5,13 +5,220 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FaceSwap - Transform Your Moments with AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-slate-50 text-slate-900">
-    <div id="root"></div>
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-3xl font-bold gradient-text">FaceSwap</h1>
+                </div>
+                <div class="flex items-center">
+                    <div class="navbar-links">
+                        <a href="#home" class="gradient-text hover:gradient-text-secondary font-medium px-3 py-2">Home</a>
+                        <a href="#swap" class="gradient-text hover:gradient-text-secondary font-medium px-3 py-2">Swap</a>
+                        <a href="#features" class="gradient-text hover:gradient-text-secondary font-medium px-3 py-2">Features</a>
+                        <a href="#contact" class="gradient-text hover:gradient-text-secondary font-medium px-3 py-2">Contact</a>
+                        <a href="#team" class="gradient-text hover:gradient-text-secondary font-medium px-3 py-2">Team</a>
+                    </div>
+                    <button id="theme-toggle" class="p-2 rounded-full bg-slate-100 hover:bg-slate-200 ml-4" title="Switch to Dark Mode">
+                        <i class="fas fa-moon text-purple-600"></i>
+                    </button>
+                    <button id="menu-toggle" class="navbar-toggle p-2 rounded-full bg-slate-100 hover:bg-slate-200 ml-2 sm:hidden" title="Toggle Menu">
+                        <i class="fas fa-bars text-purple-600"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero-gradient pt-24 pb-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-5xl sm:text-6xl font-extrabold text-white animate-slide-up">Transform Your Moments with FaceSwap</h2>
+            <p class="mt-6 text-xl sm:text-2xl text-white opacity-90 max-w-3xl mx-auto animate-slide-up">Swap faces in photos and videos effortlessly with our advanced AI technology. Fun, fast, and free!</p>
+            <a href="#swap" class="mt-10 inline-block px-10 py-4 rounded-full text-white font-semibold text-lg btn-primary">Start Swapping Now</a>
+        </div>
+    </section>
+
+    <section id="features" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up gradient-text">Why FaceSwap?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="bg-slate-100 p-8 rounded-2xl card-hover animate-slide-up">
+                    <i class="fas fa-bolt text-4xl text-purple-600 mb-4"></i>
+                    <h3 class="text-2xl font-semibold mb-4 gradient-text">Lightning Fast</h3>
+                    <p class="text-slate-600">Process face swaps in seconds with our high-performance AI.</p>
+                </div>
+                <div class="bg-slate-100 p-8 rounded-2xl card-hover animate-slide-up">
+                    <i class="fas fa-shield-alt text-4xl text-purple-600 mb-4"></i>
+                    <h3 class="text-2xl font-semibold mb-4 gradient-text">Secure & Private</h3>
+                    <p class="text-slate-600">Your files are processed securely and deleted after use.</p>
+                </div>
+                <div class="bg-slate-100 p-8 rounded-2xl card-hover animate-slide-up">
+                    <i class="fas fa-video text-4xl text-purple-600 mb-4"></i>
+                    <h3 class="text-2xl font-semibold mb-4 gradient-text">Image & Video Support</h3>
+                    <p class="text-slate-600">Swap faces in both photos and videos with ease.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="swap" class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up gradient-text">Create Your Face Swap</h2>
+            <div class="bg-white rounded-3xl shadow-2xl p-8 sm:p-12">
+                <div class="flex justify-center mb-8">
+                    <button id="image-tab" class="tab px-6 py-3 rounded-l-lg text-lg font-medium active">Image Swap</button>
+                    <button id="video-tab" class="tab px-6 py-3 rounded-r-lg text-lg font-medium bg-slate-200 text-slate-700 hover:bg-slate-300">Video Swap <span class="beta-label">Beta</span></button>
+                </div>
+                <form id="swap-form" class="space-y-10">
+                    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+                        <div class="flex flex-col items-center">
+                            <svg class="animate-spin h-10 w-10 text-white mb-4" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span class="text-white text-xl font-semibold">Processing...</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <div>
+                            <label class="block text-xl font-semibold mb-4 gradient-text" id="source-label">Source Image</label>
+                            <div class="border-3 border-dashed border-slate-400 rounded-2xl bg-slate-100 upload-box mx-auto" id="source-preview">
+                                <p class="text-slate-600">Upload image here</p>
+                            </div>
+                            <div class="upload-button-container">
+                                <input type="file" accept="image/*" class="hidden" id="source-upload">
+                                <label for="source-upload" class="cursor-pointer inline-flex items-center"><i class="fas fa-upload mr-3"></i>Upload Source Image</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xl font-semibold mb-4 gradient-text" id="target-label">Target Image</label>
+                            <div class="border-3 border-dashed border-slate-400 rounded-2xl bg-slate-100 upload-box mx-auto" id="target-preview">
+                                <p class="text-slate-600">Upload image here</p>
+                            </div>
+                            <div class="upload-button-container">
+                                <input type="file" accept="image/*" class="hidden" id="target-upload">
+                                <label for="target-upload" class="cursor-pointer inline-flex items-center"><i class="fas fa-upload mr-3"></i>Upload Target Image</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="face-selection" class="mt-8 animate-fade-in hidden">
+                        <h3 class="text-xl font-semibold text-center mb-6 gradient-text">Select a Face to Replace</h3>
+                        <div id="face-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6"></div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" id="swap-button" class="px-10 py-4 rounded-lg text-white font-semibold text-lg btn-primary opacity-50 cursor-not-allowed" disabled>Swap Faces in Image</button>
+                    </div>
+                    <div id="result-section" class="mt-12 animate-slide-up hidden">
+                        <h3 class="text-2xl font-semibold text-center mb-6 gradient-text">Your Face Swap Result</h3>
+                        <div id="result-container" class="mx-auto rounded-lg shadow-2xl max-w-full"></div>
+                        <div class="text-center mt-6">
+                            <a id="download-link" href="#" download="faceswap_result.jpg" class="inline-flex items-center px-8 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700">
+                                <i class="fas fa-download mr-2"></i>Download Result
+                            </a>
+                        </div>
+                    </div>
+                    <div id="error-message" class="mt-8 p-6 bg-red-100 text-red-700 rounded-lg text-center animate-fade-in hidden">
+                        <i class="fas fa-exclamation-circle mr-3 text-xl"></i><span></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up gradient-text">Get in Touch</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="animate-slide-up">
+                    <h3 class="text-2xl font-semibold mb-6 gradient-text">Contact Information</h3>
+                    <p class="text-slate-600 mb-4">Questions or feedback? Our team is here to help you make the most of FaceSwap.</p>
+                    <p class="text-slate-600"><i class="fas fa-envelope mr-2"></i>pankajgautamprk@gmail.com</p>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" class="text-slate-600 hover:text-purple-600"><i class="fab fa-linkedin text-2xl"></i></a>
+                        <a href="https://github.com/PankajGautam04" target="_blank" rel="noopener noreferrer" class="text-slate-600 hover:text-purple-600"><i class="fab fa-github text-2xl"></i></a>
+                    </div>
+                </div>
+                <div class="bg-slate-100 p-8 rounded-2xl shadow-lg animate-slide-up">
+                    <h3 class="text-2xl font-semibold mb-6 gradient-text">Send Us a Message</h3>
+                    <div class="space-y-6">
+                        <input type="text" placeholder="Your Name" class="w-full p-4 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                        <input type="email" placeholder="Your Email" class="w-full p-4 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                        <textarea placeholder="Your Message" rows="5" class="w-full p-4 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"></textarea>
+                        <button class="w-full px-6 py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 btn-primary">Send Message</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="team" class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl sm:text-5xl font-bold text-center mb-16 animate-slide-up gradient-text">Meet Our Team</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="bg-white p-8 rounded-2xl card-hover animate-slide-up">
+                    <i class="fas fa-user-circle text-4xl text-purple-600 mb-4"></i>
+                    <h3 class="text-2xl font-semibold mb-2 gradient-text-secondary">Chandrapal Parmar</h3>
+                    <p class="text-slate-600">MCA Student</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl card-hover animate-slide-up">
+                    <i class="fas fa-user-circle text-4xl text-purple-600 mb-4"></i>
+                    <h3 class="text-2xl font-semibold mb-2 gradient-text-secondary">Pankaj Gautam</h3>
+                    <p class="text-slate-600">MCA Student</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl card-hover animate-slide-up">
+                    <i class="fas fa-user-circle text-4xl text-purple-600 mb-4"></i>
+                    <h3 class="text-2xl font-semibold mb-2 gradient-text-secondary">Siddharth Namdev</h3>
+                    <p class="text-slate-600">MCA Student</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 gradient-text">FaceSwap</h3>
+                    <p class="text-slate-400">Transform your photos and videos with AI-powered face swapping.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 gradient-text">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-slate-400 hover:text-white">Home</a></li>
+                        <li><a href="#swap" class="text-slate-400 hover:text-white">Swap</a></li>
+                        <li><a href="#features" class="text-slate-400 hover:text-white">Features</a></li>
+                        <li><a href="#contact" class="text-slate-400 hover:text-white">Contact</a></li>
+                        <li><a href="#team" class="text-slate-400 hover:text-white">Team</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 gradient-text">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-slate-400 hover:text-white">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 gradient-text">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-slate-400 hover:text-white"><i class="fab fa-linkedin text-2xl"></i></a>
+                        <a href="https://github.com/PankajGautam04" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white"><i class="fab fa-github text-2xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12">
+                <h4 class="text-lg font-semibold mb-4 gradient-text text-center">Disclaimer</h4>
+                <p class="text-slate-400 text-center text-sm">FaceSwap is intended for educational and entertainment purposes only. Users are responsible for ensuring they have permission to use the images uploaded. Do not use this tool to create harmful, misleading, or illegal content, including deepfakes that violate privacy or spread misinformation. We do not store your images after processing. By using FaceSwap, you agree to use it responsibly and in compliance with applicable laws.</p>
+            </div>
+            <div class="mt-6 text-center text-slate-400">
+                <p>© 2025 FaceSwap. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
     <script src="app.js"></script>
 </body>
 </html>
