@@ -45,13 +45,13 @@ function resetState() {
     selectedFaceIndex = null;
     showFaceSelection = loading = false;
     error = null;
-    sourcePreview.innerHTML = `<p class="text-slate-600">Upload ${activeTab === 'image' ? 'image' : 'video'} here</p>`;
+    sourcePreview.innerHTML = `<p class="text-slate-600">Upload ${activeTab === 'image' ? 'image' : 'image'} here</p>`;
     targetPreview.innerHTML = `<p class="text-slate-600">Upload ${activeTab === 'image' ? 'image' : 'video'} here</p>`;
-    sourceLabel.textContent = `Source ${activeTab === 'image' ? 'Image' : 'Video'}`;
+    sourceLabel.textContent = `Source Image`;
     targetLabel.textContent = `Target ${activeTab === 'image' ? 'Image' : 'Video'}`;
-    sourceUpload.accept = activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm';
+    sourceUpload.accept = 'image/*';
     targetUpload.accept = activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm';
-    sourceUpload.nextElementSibling.innerHTML = `<i class="fas fa-upload mr-3"></i>Upload Source ${activeTab === 'image' ? 'Image' : 'Video'}`;
+    sourceUpload.nextElementSibling.innerHTML = `<i class="fas fa-upload mr-3"></i>Upload Source Image`;
     targetUpload.nextElementSibling.innerHTML = `<i class="fas fa-upload mr-3"></i>Upload Target ${activeTab === 'image' ? 'Image' : 'Video'}`;
     faceSelection.classList.add('hidden');
     resultSection.classList.add('hidden');
@@ -66,30 +66,24 @@ function renameFile(file, newName, isImage) {
 function handleSourceChange(e) {
     const file = e.target.files[0];
     if (!file) {
-        if (activeTab === 'image') sourceImageFile = null;
-        else sourceVideoFile = null;
-        sourcePreview.innerHTML = `<p class="text-slate-600">Upload ${activeTab === 'image' ? 'image' : 'video'} here</p>`;
+        sourceImageFile = null;
+        sourceVideoFile = null;
+        sourcePreview.innerHTML = `<p class="text-slate-600">Upload image here</p>`;
         updateSwapButton();
         return;
     }
-    const maxSize = activeTab === 'image' ? 5_000_000 : 50_000_000;
+    const maxSize = 5_000_000; // Always 5MB for source image
     if (file.size > maxSize) {
-        setError(`${activeTab === 'image' ? 'Source image' : 'Source video'} too large (max ${activeTab === 'image' ? '5MB' : '50MB'}).`);
-        if (activeTab === 'image') sourceImageFile = null;
-        else sourceVideoFile = null;
-        sourcePreview.innerHTML = `<p class="text-slate-600">Upload ${activeTab === 'image' ? 'image' : 'video'} here</p>`;
+        setError(`Source image too large (max 5MB).`);
+        sourceImageFile = null;
+        sourceVideoFile = null;
+        sourcePreview.innerHTML = `<p class="text-slate-600">Upload image here</p>`;
         return;
     }
-    const renamedFile = renameFile(file, `source.${activeTab === 'image' ? 'jpg' : 'mp4'}`, activeTab === 'image');
-    if (activeTab === 'image') {
-        sourceImageFile = renamedFile;
-        sourceVideoFile = null;
-        sourcePreview.innerHTML = `<div class="preview-container"><img src="${URL.createObjectURL(renamedFile)}" alt="Source Preview" class="rounded-lg shadow-lg"></div>`;
-    } else {
-        sourceVideoFile = renamedFile;
-        sourceImageFile = null;
-        sourcePreview.innerHTML = `<div class="preview-container"><video src="${URL.createObjectURL(renamedFile)}" class="rounded-lg shadow-lg" controls></div>`;
-    }
+    const renamedFile = renameFile(file, `source.jpg`, true);
+    sourceImageFile = renamedFile;
+    sourceVideoFile = null;
+    sourcePreview.innerHTML = `<div class="preview-container"><img src="${URL.createObjectURL(renamedFile)}" alt="Source Preview" class="rounded-lg shadow-lg"></div>`;
     setError(null);
     updateSwapButton();
 }
@@ -188,7 +182,7 @@ window.handleFaceSelect = function(index) {
 };
 
 function updateSwapButton() {
-    const hasFiles = activeTab === 'image' ? (sourceImageFile && targetImageFile) : (sourceVideoFile && targetVideoFile);
+    const hasFiles = activeTab === 'image' ? (sourceImageFile && targetImageFile) : (sourceImageFile && targetVideoFile);
     swapButton.disabled = loading || !hasFiles || (targetFaces.length > 1 && selectedFaceIndex === null);
     swapButton.classList.toggle('opacity-50', swapButton.disabled);
     swapButton.classList.toggle('cursor-not-allowed', swapButton.disabled);
@@ -199,9 +193,9 @@ function updateSwapButton() {
 
 async function handleSubmit(e) {
     e.preventDefault();
-    const hasFiles = activeTab === 'image' ? (sourceImageFile && targetImageFile) : (sourceVideoFile && targetVideoFile);
+    const hasFiles = activeTab === 'image' ? (sourceImageFile && targetImageFile) : (sourceImageFile && targetVideoFile);
     if (!hasFiles) {
-        setError(`Please upload both source and target ${activeTab === 'image' ? 'images' : 'videos'}.`);
+        setError(`Please upload both source image and target ${activeTab === 'image' ? 'image' : 'video'}.`);
         return;
     }
     if (targetFaces.length === 0) {
@@ -218,7 +212,7 @@ async function handleSubmit(e) {
     resultSection.classList.add('hidden');
     const formData = new FormData();
     formData.append("face_index", selectedFaceIndex || 0);
-    formData.append("source", activeTab === 'image' ? sourceImageFile : sourceVideoFile);
+    formData.append("source", sourceImageFile);
     formData.append("target", activeTab === 'image' ? targetImageFile : targetVideoFile);
     try {
         const response = await fetch(
