@@ -1,5 +1,4 @@
-// app.js — full script (replace your existing app.js with this)
-
+// app.js — corrected endpoints for image and video swap backends
 let sourceImageFile = null,
     targetImageFile = null,
     sourceVideoFile = null,
@@ -15,6 +14,7 @@ let loading = false,
     activeTab = 'image',
     isMenuOpen = false;
 
+// DOM refs
 const body = document.body;
 const themeToggle = document.getElementById('theme-toggle');
 const menuToggle = document.getElementById('menu-toggle');
@@ -36,6 +36,11 @@ const resultContainer = document.getElementById('result-container');
 const downloadLink = document.getElementById('download-link');
 const errorMessage = document.getElementById('error-message');
 const loadingOverlay = document.getElementById('loading-overlay');
+
+// Backend endpoints (corrected)
+const IMAGE_SWAP_ENDPOINT = 'https://face-swap-api-7fb0.onrender.com/swap-faces/';
+const VIDEO_SWAP_ENDPOINT = 'https://face-swap-video-backend.onrender.com/swap-faces-video/';
+const FACE_DETECT_ENDPOINT = 'https://face-detection-pkw8.onrender.com/detect-faces/';
 
 function toggleTheme() {
     isDarkMode = !isDarkMode;
@@ -59,13 +64,24 @@ function toggleMenu() {
 }
 
 function renameFile(file, newName, isImage) {
-    // For images use image/jpeg for compatibility; otherwise preserve original type
     return new File([file], newName, { type: isImage ? 'image/jpeg' : file.type });
+}
+
+function setError(msg) {
+    error = msg;
+    if (msg) {
+        errorMessage.classList.remove('hidden');
+        const span = errorMessage.querySelector('span');
+        if (span) span.textContent = msg;
+    } else {
+        errorMessage.classList.add('hidden');
+    }
 }
 
 function updateSwapButton() {
     const hasFiles = activeTab === 'image' ? (sourceImageFile && targetImageFile) : (sourceImageFile && targetVideoFile);
     const needsFaceSelection = (activeTab === 'image' && targetFaces.length > 1);
+
     swapButton.disabled = loading || !hasFiles || (needsFaceSelection && selectedFaceIndex === null);
     swapButton.classList.toggle('opacity-50', swapButton.disabled);
     swapButton.classList.toggle('cursor-not-allowed', swapButton.disabled);
@@ -86,7 +102,6 @@ function updateSwapButton() {
     }
 }
 
-// reset UI & state for tab changes or initial load
 function resetState() {
     sourceImageFile = targetImageFile = sourceVideoFile = targetVideoFile = resultImage = resultVideo = null;
     targetFaces = [];
@@ -103,12 +118,8 @@ function resetState() {
     sourceUpload.accept = 'image/*';
     targetUpload.accept = activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm';
 
-    if (sourceUpload.nextElementSibling) {
-        sourceUpload.nextElementSibling.innerHTML = `<i class="fas fa-upload mr-3"></i>Upload Source Image`;
-    }
-    if (targetUpload.nextElementSibling) {
-        targetUpload.nextElementSibling.innerHTML = `<i class="fas fa-upload mr-3"></i>Upload Target ${activeTab === 'image' ? 'Image' : 'Video'}`;
-    }
+    if (sourceUpload.nextElementSibling) sourceUpload.nextElementSibling.innerHTML = `<i class="fas fa-upload mr-3"></i>Upload Source Image`;
+    if (targetUpload.nextElementSibling) targetUpload.nextElementSibling.innerHTML = `<i class="fas fa-upload mr-3"></i>Upload Target ${activeTab === 'image' ? 'Image' : 'Video'}`;
 
     faceSelection.classList.add('hidden');
     resultSection.classList.add('hidden');
@@ -117,19 +128,6 @@ function resetState() {
     updateSwapButton();
 }
 
-// show/hide error
-function setError(msg) {
-    error = msg;
-    if (msg) {
-        errorMessage.classList.remove('hidden');
-        const span = errorMessage.querySelector('span');
-        if (span) span.textContent = msg;
-    } else {
-        errorMessage.classList.add('hidden');
-    }
-}
-
-// handle source (always an image in your design)
 function handleSourceChange(e) {
     const file = e.target.files && e.target.files[0];
     if (!file) {
@@ -153,7 +151,6 @@ function handleSourceChange(e) {
     updateSwapButton();
 }
 
-// handle target (image OR video). For image: run detection; for video: do not call detectFaces()
 async function handleTargetChange(e) {
     const file = e.target.files && e.target.files[0];
     if (!file) {
@@ -179,7 +176,6 @@ async function handleTargetChange(e) {
     const renamedFile = renameFile(file, `target.${activeTab === 'image' ? 'jpg' : 'mp4'}`, activeTab === 'image');
 
     if (activeTab === 'image') {
-        // image: preview + detect faces (await detection so UI stays consistent)
         targetImageFile = renamedFile;
         targetVideoFile = null;
         targetPreview.innerHTML = `<div class="preview-container"><img src="${URL.createObjectURL(renamedFile)}" alt="Target Preview" class="rounded-lg shadow-lg"></div>`;
@@ -187,9 +183,9 @@ async function handleTargetChange(e) {
         selectedFaceIndex = null;
         faceSelection.classList.add('hidden');
         setError(null);
-        await detectFaces(); // await so UI updates after detection
+        await detectFaces();
     } else {
-        // video: preview only — do not run detectFaces() here
+        // IMPORTANT: do NOT call face detection for video here.
         targetVideoFile = renamedFile;
         targetImageFile = null;
         targetPreview.innerHTML = `<div class="preview-container"><video src="${URL.createObjectURL(renamedFile)}" class="rounded-lg shadow-lg" controls></video></div>`;
@@ -201,7 +197,6 @@ async function handleTargetChange(e) {
     updateSwapButton();
 }
 
-// detect faces for image targets only
 async function detectFaces() {
     if (activeTab !== 'image') return false;
     if (!targetImageFile) {
@@ -218,7 +213,7 @@ async function detectFaces() {
     formData.append('target', targetImageFile);
 
     try {
-        const response = await fetch('https://face-detection-pkw8.onrender.com/detect-faces/', { method: 'POST', body: formData });
+        const response = await fetch(FACE_DETECT_ENDPOINT, { method: 'POST', body: formData });
         if (!response.ok) {
             let msg = 'Failed to detect faces';
             try { const j = await response.json(); if (j && j.detail) msg = j.detail; } catch (_) {}
@@ -240,7 +235,7 @@ async function detectFaces() {
             return true;
         }
 
-        // multiple faces: build selection UI
+        // multiple faces -> show selection UI
         showFaceSelection = true;
         faceSelection.classList.remove('hidden');
         faceContainer.innerHTML = targetFaces.map((face, i) => `
@@ -263,7 +258,6 @@ async function detectFaces() {
     }
 }
 
-// selectable from face thumbnails when multiple faces present
 window.handleFaceSelect = function(index) {
     selectedFaceIndex = selectedFaceIndex === index ? null : index;
     const boxes = faceContainer.querySelectorAll('.face-box');
@@ -271,7 +265,6 @@ window.handleFaceSelect = function(index) {
     updateSwapButton();
 };
 
-// submit handler — for images may re-run detection if needed; for videos it directly calls video swap endpoint
 async function handleSubmit(e) {
     e.preventDefault();
 
@@ -282,17 +275,16 @@ async function handleSubmit(e) {
     }
 
     if (activeTab === 'image') {
-        // ensure we have detection results
         if (targetFaces.length === 0) {
-            const canProceed = await detectFaces();
-            if (!canProceed) return;
+            const ok = await detectFaces();
+            if (!ok) return;
         }
         if (targetFaces.length > 1 && selectedFaceIndex === null) {
             setError('Please select a face from the target.');
             return;
         }
     } else {
-        // video: do not run client-side detection. Ensure some face_index value exists for server if it expects one.
+        // video: skip client-side detection. ensure a default face_index for server if needed.
         if (selectedFaceIndex === null) selectedFaceIndex = 0;
     }
 
@@ -308,10 +300,8 @@ async function handleSubmit(e) {
     formData.append('target', activeTab === 'image' ? targetImageFile : targetVideoFile);
 
     try {
-        const urlEndpoint = activeTab === 'image'
-            ? 'https://face-swap-api-7fb0.onrender.com/swap-faces/'
-            : 'https://face-swap-api-7fb0.onrender.com/swap-faces-video/';
-        const response = await fetch(urlEndpoint, { method: 'POST', body: formData });
+        const endpoint = activeTab === 'image' ? IMAGE_SWAP_ENDPOINT : VIDEO_SWAP_ENDPOINT;
+        const response = await fetch(endpoint, { method: 'POST', body: formData });
 
         if (!response.ok) {
             let msg = `Failed to swap faces in ${activeTab}`;
@@ -320,20 +310,20 @@ async function handleSubmit(e) {
         }
 
         const blob = await response.blob();
-        const objectUrl = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
 
         if (activeTab === 'image') {
-            resultImage = objectUrl;
+            resultImage = url;
             resultVideo = null;
-            resultContainer.innerHTML = `<img src="${objectUrl}" alt="Swapped Face" class="mx-auto rounded-lg shadow-2xl max-w-full">`;
+            resultContainer.innerHTML = `<img src="${url}" alt="Swapped Face" class="mx-auto rounded-lg shadow-2xl max-w-full">`;
             downloadLink.download = 'faceswap_result.jpg';
         } else {
-            resultVideo = objectUrl;
+            resultVideo = url;
             resultImage = null;
-            resultContainer.innerHTML = `<video src="${objectUrl}" class="mx-auto rounded-lg shadow-2xl max-w-full" controls></video>`;
+            resultContainer.innerHTML = `<video src="${url}" class="mx-auto rounded-lg shadow-2xl max-w-full" controls></video>`;
             downloadLink.download = 'faceswap_result.mp4';
         }
-        downloadLink.href = objectUrl;
+        downloadLink.href = url;
         resultSection.classList.remove('hidden');
     } catch (err) {
         setError('Failed to swap faces: ' + (err.message || err));
@@ -344,7 +334,7 @@ async function handleSubmit(e) {
     }
 }
 
-// Attach listeners
+// Event listeners
 themeToggle && themeToggle.addEventListener('click', toggleTheme);
 menuToggle && menuToggle.addEventListener('click', toggleMenu);
 
