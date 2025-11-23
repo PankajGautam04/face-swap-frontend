@@ -1,4 +1,4 @@
-// app.js — corrected endpoints for image and video swap backends
+// app.js — corrected endpoints and form field names for image vs video swaps
 let sourceImageFile = null,
     targetImageFile = null,
     sourceVideoFile = null,
@@ -37,9 +37,9 @@ const downloadLink = document.getElementById('download-link');
 const errorMessage = document.getElementById('error-message');
 const loadingOverlay = document.getElementById('loading-overlay');
 
-// Backend endpoints (corrected)
+// Backend endpoints
 const IMAGE_SWAP_ENDPOINT = 'https://face-swap-api-7fb0.onrender.com/swap-faces/';
-const VIDEO_SWAP_ENDPOINT = 'https://face-swap-video-backend.onrender.com/swap-faces-video/';
+const VIDEO_SWAP_ENDPOINT = 'https://face-swap-video-backend.onrender.com/swap-video/';
 const FACE_DETECT_ENDPOINT = 'https://face-detection-pkw8.onrender.com/detect-faces/';
 
 function toggleTheme() {
@@ -296,8 +296,17 @@ async function handleSubmit(e) {
 
     const formData = new FormData();
     formData.append('face_index', selectedFaceIndex || 0);
-    formData.append('source', sourceImageFile);
-    formData.append('target', activeTab === 'image' ? targetImageFile : targetVideoFile);
+
+    // IMPORTANT: use different form field names depending on image vs video backend expectations
+    if (activeTab === 'image') {
+        // image backend expects 'source' and 'target' (keep compatibility)
+        formData.append('source', sourceImageFile);
+        formData.append('target', targetImageFile);
+    } else {
+        // video backend expects 'source_image' and 'target_video'
+        formData.append('source_image', sourceImageFile);
+        formData.append('target_video', targetVideoFile);
+    }
 
     try {
         const endpoint = activeTab === 'image' ? IMAGE_SWAP_ENDPOINT : VIDEO_SWAP_ENDPOINT;
