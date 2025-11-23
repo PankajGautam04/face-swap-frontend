@@ -1,3 +1,5 @@
+// app.js - updated: don't call face-detection on video upload; only detect for images or when swapping if needed.
+
 let sourceImageFile = null, targetImageFile = null, sourceVideoFile = null, targetVideoFile = null;
 let targetFaces = [], selectedFaceIndex = null, resultImage = null, resultVideo = null;
 let loading = false, error = null, isDarkMode = false, showFaceSelection = false, activeTab = 'image', isMenuOpen = false;
@@ -51,8 +53,13 @@ function resetState() {
     targetLabel.textContent = `Target ${activeTab === 'image' ? 'Image' : 'Video'}`;
     sourceUpload.accept = 'image/*';
     targetUpload.accept = activeTab === 'image' ? 'image/*' : 'video/mp4,video/webm';
-    sourceUpload.nextElementSibling.innerHTML = `<i class="fas fa-upload mr-3"></i>Upload Source Image`;
-    targetUpload.nextElementSibling.innerHTML = `<i class="fas fa-upload mr-3"></i>Upload Target ${activeTab === 'image' ? 'Image' : 'Video'}`;
+    // Keep the labels for upload buttons consistent
+    if (sourceUpload.nextElementSibling) {
+        sourceUpload.nextElementSibling.innerHTML = `<i class="fas fa-upload mr-3"></i>Upload Source Image`;
+    }
+    if (targetUpload.nextElementSibling) {
+        targetUpload.nextElementSibling.innerHTML = `<i class="fas fa-upload mr-3"></i>Upload Target ${activeTab === 'image' ? 'Image' : 'Video'}`;
+    }
     faceSelection.classList.add('hidden');
     resultSection.classList.add('hidden');
     errorMessage.classList.add('hidden');
@@ -60,6 +67,7 @@ function resetState() {
 }
 
 function renameFile(file, newName, isImage) {
+    // keep MIME type correct enough; for images we set image/jpeg
     return new File([file], newName, { type: isImage ? 'image/jpeg' : file.type });
 }
 
@@ -111,40 +119,59 @@ function handleTargetChange(e) {
     }
     const renamedFile = renameFile(file, `target.${activeTab === 'image' ? 'jpg' : 'mp4'}`, activeTab === 'image');
     if (activeTab === 'image') {
+        // For images: store and immediately run detection so UI can let user pick a face.
         targetImageFile = renamedFile;
         targetVideoFile = null;
         targetPreview.innerHTML = `<div class="preview-container"><img src="${URL.createObjectURL(renamedFile)}" alt="Target Preview" class="rounded-lg shadow-lg"></div>`;
+        // Reset previous face data and run detection for images
+        targetFaces = [];
+        selectedFaceIndex = null;
+        showFaceSelection = false;
+        faceSelection.classList.add('hidden');
+        setError(null);
+        // Run face detection for images (immediate feedback)
+        detectFaces(); 
     } else {
+        // For video: do NOT call face detection here. Let the swap endpoint handle detection when user clicks Swap.
         targetVideoFile = renamedFile;
         targetImageFile = null;
-        targetPreview.innerHTML = `<div class="preview-container"><video src="${URL.createObjectURL(renamedFile)}" class="rounded-lg shadow-lg" controls></div>`;
-        detectFaces();
+        targetPreview.innerHTML = `<div class="preview-container"><video src="${URL.createObjectURL(renamedFile)}" class="rounded-lg shadow-lg" controls></video></div>`;
+        // Clear any previous face-selection state (videos will be handled server-side)
+        targetFaces = [];
+        selectedFaceIndex = null;
+        showFaceSelection = false;
+        faceSelection.classList.add('hidden');
+        setError(null);
     }
-    targetFaces = [];
-    selectedFaceIndex = null;
-    showFaceSelection = false;
-    faceSelection.classList.add('hidden');
-    setError(null);
     updateSwapButton();
 }
 
 async function detectFaces() {
-    if (!targetImageFile && !targetVideoFile) {
-        setError("Please upload a target image or video.");
+    // Only run detection for images (we otherwise skip for videos).
+    if (activeTab !== 'image') {
+        // Not applicable
+        return false;
+    }
+    if (!targetImageFile) {
+        setError("Please upload a target image.");
         return false;
     }
     loading = true;
     loadingOverlay.classList.remove('hidden');
     setError(null);
     const formData = new FormData();
-    formData.append("target", targetImageFile || targetVideoFile);
+    formData.append("target", targetImageFile);
     try {
         const response = await fetch("https://face-detection-pkw8.onrender.com/detect-faces/", { method: "POST", body: formData });
-        if (!response.ok) throw new Error((await response.json()).detail || "Failed to detect faces");
+        if (!response.ok) {
+            let errText = "Failed to detect faces";
+            try { errText = (await response.json()).detail || errText; } catch (_) {}
+            throw new Error(errText);
+        }
         const data = await response.json();
-        targetFaces = data.faces;
+        targetFaces = data.faces || [];
         if (targetFaces.length === 0) {
-            setError("No faces detected in the target.");
+            setError("No faces detected in the target image.");
             return false;
         } else if (targetFaces.length === 1) {
             selectedFaceIndex = 0;
@@ -153,6 +180,7 @@ async function detectFaces() {
             updateSwapButton();
             return true;
         } else {
+            // multiple faces -> show options
             showFaceSelection = true;
             faceSelection.classList.remove('hidden');
             faceContainer.innerHTML = targetFaces.map((face, index) => `
@@ -182,13 +210,20 @@ window.handleFaceSelect = function(index) {
 };
 
 function updateSwapButton() {
+    // For image mode: require sourceImageFile & targetImageFile and if multiple faces, require a selection.
+    // For video mode: require sourceImageFile & targetVideoFile, don't block on face selection.
     const hasFiles = activeTab === 'image' ? (sourceImageFile && targetImageFile) : (sourceImageFile && targetVideoFile);
-    swapButton.disabled = loading || !hasFiles || (targetFaces.length > 1 && selectedFaceIndex === null);
+    const needsFaceSelection = (activeTab === 'image' && targetFaces.length > 1);
+    swapButton.disabled = loading || !hasFiles || needsFaceSelection && selectedFaceIndex === null;
     swapButton.classList.toggle('opacity-50', swapButton.disabled);
     swapButton.classList.toggle('cursor-not-allowed', swapButton.disabled);
-    if (loading) swapButton.innerHTML = `<div class="flex items-center"><svg class="animate-spin h-6 w-6 mr-3 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Processing...</div>`;
-    else if (targetFaces.length > 1 && selectedFaceIndex === null) swapButton.textContent = "Select a Face";
-    else swapButton.textContent = `Swap Face in ${activeTab === 'image' ? 'Image' : 'Video'}`;
+    if (loading) {
+        swapButton.innerHTML = `<div class="flex items-center"><svg class="animate-spin h-6 w-6 mr-3 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Processing...</div>`;
+    } else if (activeTab === 'image' && targetFaces.length > 1 && selectedFaceIndex === null) {
+        swapButton.textContent = "Select a Face";
+    } else {
+        swapButton.textContent = `Swap Face in ${activeTab === 'image' ? 'Image' : 'Video'}`;
+    }
 }
 
 async function handleSubmit(e) {
@@ -198,28 +233,43 @@ async function handleSubmit(e) {
         setError(`Please upload both source image and target ${activeTab === 'image' ? 'image' : 'video'}.`);
         return;
     }
-    if (targetFaces.length === 0) {
-        const canProceed = await detectFaces();
-        if (!canProceed) return;
+
+    // If image mode and we don't yet have detection results, detect now (user uploaded image but detection might not have finished).
+    if (activeTab === 'image') {
+        if (targetFaces.length === 0) {
+            const canProceed = await detectFaces();
+            if (!canProceed) return; // either error or no faces
+        }
+        if (targetFaces.length > 1 && selectedFaceIndex === null) {
+            setError("Please select a face from the target.");
+            return;
+        }
+    } else {
+        // video mode: do NOT call detectFaces here. Let the video swap endpoint handle detection or server-side selection logic.
+        // We'll still set selectedFaceIndex to 0 if it's null (server may use it or ignore).
+        if (selectedFaceIndex === null) selectedFaceIndex = 0;
     }
-    if (targetFaces.length > 1 && selectedFaceIndex === null) {
-        setError("Please select a face from the target.");
-        return;
-    }
+
     loading = true;
     loadingOverlay.classList.remove('hidden');
     setError(null);
     resultSection.classList.add('hidden');
+
     const formData = new FormData();
     formData.append("face_index", selectedFaceIndex || 0);
     formData.append("source", sourceImageFile);
     formData.append("target", activeTab === 'image' ? targetImageFile : targetVideoFile);
+
     try {
         const response = await fetch(
             activeTab === 'image' ? "https://face-swap-api-7fb0.onrender.com/swap-faces/" : "https://face-swap-api-7fb0.onrender.com/swap-faces-video/",
             { method: "POST", body: formData }
         );
-        if (!response.ok) throw new Error((await response.json()).detail || `Failed to swap faces in ${activeTab}`);
+        if (!response.ok) {
+            let errText = `Failed to swap faces in ${activeTab}`;
+            try { errText = (await response.json()).detail || errText; } catch (_) {}
+            throw new Error(errText);
+        }
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
         if (activeTab === 'image') {
@@ -250,6 +300,7 @@ function setError(msg) {
     if (msg) errorMessage.querySelector('span').textContent = msg;
 }
 
+// Event listeners
 themeToggle.addEventListener('click', toggleTheme);
 menuToggle.addEventListener('click', toggleMenu);
 imageTab.addEventListener('click', () => {
@@ -269,3 +320,6 @@ videoTab.addEventListener('click', () => {
 sourceUpload.addEventListener('change', handleSourceChange);
 targetUpload.addEventListener('change', handleTargetChange);
 swapForm.addEventListener('submit', handleSubmit);
+
+// Initialize UI state
+resetState();
