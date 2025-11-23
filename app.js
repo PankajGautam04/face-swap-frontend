@@ -114,30 +114,34 @@ function handleTargetChange(e) {
         targetImageFile = renamedFile;
         targetVideoFile = null;
         targetPreview.innerHTML = `<div class="preview-container"><img src="${URL.createObjectURL(renamedFile)}" alt="Target Preview" class="rounded-lg shadow-lg"></div>`;
+        // Only detect faces for image mode
+        detectFaces();
     } else {
+        // Video mode - skip face detection
         targetVideoFile = renamedFile;
         targetImageFile = null;
-        targetPreview.innerHTML = `<div class="preview-container"><video src="${URL.createObjectURL(renamedFile)}" class="rounded-lg shadow-lg" controls></div>`;
-        detectFaces();
+        targetPreview.innerHTML = `<div class="preview-container"><video src="${URL.createObjectURL(renamedFile)}" class="rounded-lg shadow-lg" controls></video>`;
+        // Reset face-related state for video
+        targetFaces = [];
+        selectedFaceIndex = null;
+        showFaceSelection = false;
+        faceSelection.classList.add('hidden');
     }
-    targetFaces = [];
-    selectedFaceIndex = null;
-    showFaceSelection = false;
-    faceSelection.classList.add('hidden');
     setError(null);
     updateSwapButton();
 }
 
 async function detectFaces() {
-    if (!targetImageFile && !targetVideoFile) {
-        setError("Please upload a target image or video.");
+    // Only run face detection for image mode
+    if (activeTab !== 'image' || !targetImageFile) {
         return false;
     }
+    
     loading = true;
     loadingOverlay.classList.remove('hidden');
     setError(null);
     const formData = new FormData();
-    formData.append("target", targetImageFile || targetVideoFile);
+    formData.append("target", targetImageFile);
     try {
         const response = await fetch("https://face-detection-pkw8.onrender.com/detect-faces/", { method: "POST", body: formData });
         if (!response.ok) throw new Error((await response.json()).detail || "Failed to detect faces");
@@ -183,12 +187,24 @@ window.handleFaceSelect = function(index) {
 
 function updateSwapButton() {
     const hasFiles = activeTab === 'image' ? (sourceImageFile && targetImageFile) : (sourceImageFile && targetVideoFile);
-    swapButton.disabled = loading || !hasFiles || (targetFaces.length > 1 && selectedFaceIndex === null);
+    
+    // For video mode, only check if files are uploaded
+    // For image mode, also check face selection
+    const canSwap = activeTab === 'video' 
+        ? hasFiles 
+        : (hasFiles && (targetFaces.length === 0 || targetFaces.length === 1 || selectedFaceIndex !== null));
+    
+    swapButton.disabled = loading || !canSwap;
     swapButton.classList.toggle('opacity-50', swapButton.disabled);
     swapButton.classList.toggle('cursor-not-allowed', swapButton.disabled);
-    if (loading) swapButton.innerHTML = `<div class="flex items-center"><svg class="animate-spin h-6 w-6 mr-3 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Processing...</div>`;
-    else if (targetFaces.length > 1 && selectedFaceIndex === null) swapButton.textContent = "Select a Face";
-    else swapButton.textContent = `Swap Face in ${activeTab === 'image' ? 'Image' : 'Video'}`;
+    
+    if (loading) {
+        swapButton.innerHTML = `<div class="flex items-center"><svg class="animate-spin h-6 w-6 mr-3 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Processing...</div>`;
+    } else if (activeTab === 'image' && targetFaces.length > 1 && selectedFaceIndex === null) {
+        swapButton.textContent = "Select a Face";
+    } else {
+        swapButton.textContent = `Swap Face in ${activeTab === 'image' ? 'Image' : 'Video'}`;
+    }
 }
 
 async function handleSubmit(e) {
@@ -198,30 +214,49 @@ async function handleSubmit(e) {
         setError(`Please upload both source image and target ${activeTab === 'image' ? 'image' : 'video'}.`);
         return;
     }
-    if (targetFaces.length === 0) {
-        const canProceed = await detectFaces();
-        if (!canProceed) return;
+    
+    // Only check face detection for image mode
+    if (activeTab === 'image') {
+        if (targetFaces.length === 0) {
+            const canProceed = await detectFaces();
+            if (!canProceed) return;
+        }
+        if (targetFaces.length > 1 && selectedFaceIndex === null) {
+            setError("Please select a face from the target.");
+            return;
+        }
     }
-    if (targetFaces.length > 1 && selectedFaceIndex === null) {
-        setError("Please select a face from the target.");
-        return;
-    }
+    
     loading = true;
     loadingOverlay.classList.remove('hidden');
     setError(null);
     resultSection.classList.add('hidden');
+    
     const formData = new FormData();
-    formData.append("face_index", selectedFaceIndex || 0);
+    
+    // Only add face_index for image mode
+    if (activeTab === 'image') {
+        formData.append("face_index", selectedFaceIndex || 0);
+    }
+    
     formData.append("source", sourceImageFile);
     formData.append("target", activeTab === 'image' ? targetImageFile : targetVideoFile);
+    
     try {
-        const response = await fetch(
-            activeTab === 'image' ? "https://face-swap-api-7fb0.onrender.com/swap-faces/" : "https://face-swap-api-7fb0.onrender.com/swap-faces-video/",
-            { method: "POST", body: formData }
-        );
-        if (!response.ok) throw new Error((await response.json()).detail || `Failed to swap faces in ${activeTab}`);
+        const endpoint = activeTab === 'image' 
+            ? "https://face-swap-api-7fb0.onrender.com/swap-faces/" 
+            : "https://face-swap-api-7fb0.onrender.com/swap-video/";
+        
+        const response = await fetch(endpoint, { method: "POST", body: formData });
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ detail: "Unknown error" }));
+            throw new Error(errorData.detail || `Failed to swap faces in ${activeTab}`);
+        }
+        
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
+        
         if (activeTab === 'image') {
             resultImage = url;
             resultVideo = null;
